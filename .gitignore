@@ -1,0 +1,8 @@
+coverage
+node_modules
+
+# WebStorm IDE files
+.idea/*
+
+# vim temp files
+*swp

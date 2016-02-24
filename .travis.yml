@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+    - "0.10"
+    - "0.12"
+    - "4.2"
+    - "5"
+
+sudo: false
+
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#wikimedia-services"
+    on_success: change
+    on_failure: always
+
+script: npm run-script coverage && (npm run-script coveralls || exit 0)
