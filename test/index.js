@@ -125,6 +125,7 @@ describe('Validation', function () {
         [ '.com' ],
         [ '~' ],
         [ '#' ],
+        [ 'Test#Abc' ],
         [ '"' ],
         [ '\'' ],
         [ 'Talk:Sandbox' ],
@@ -157,11 +158,16 @@ describe('Validation', function () {
 describe('Normalization', function() {
     var testCases = [
         [ 'en.wikipedia.org', 'Test', 'Test'],
+        [ 'en.wikipedia.org', ':Test', 'Test'],
+        [ 'en.wikipedia.org', ': Test', 'Test'],
+        [ 'en.wikipedia.org', ':_Test_', 'Test'],
         [ 'en.wikipedia.org', 'Foo:bar', 'Foo:bar'],
         [ 'en.wikipedia.org', 'Talk: foo', 'Talk:Foo'],
         [ 'en.wikipedia.org', 'int:eger', 'Int:eger'],
+
         // User IP sanitizations
         [ 'en.wikipedia.org', 'User:::1', 'User:0:0:0:0:0:0:0:1'],
+        [ 'en.wikipedia.org', 'User:0:0:0:0:0:0:0:1', 'User:0:0:0:0:0:0:0:1'],
         [ 'en.wikipedia.org', 'User:127.000.000.001', 'User:127.0.0.1'],
         [ 'en.wikipedia.org', 'User:0.0.0.0', 'User:0.0.0.0' ],
         [ 'en.wikipedia.org', 'User:00.00.00.00', 'User:0.0.0.0' ],
@@ -174,7 +180,17 @@ describe('Normalization', function() {
         [ 'en.wikipedia.org', 'User:080.072.250.04', 'User:80.72.250.4' ],
         [ 'en.wikipedia.org', 'User:Foo.1000.00', 'User:Foo.1000.00' ],
         [ 'en.wikipedia.org', 'User:Bar.01', 'User:Bar.01' ],
-        [ 'en.wikipedia.org', 'User:Bar.010', 'User:Bar.010' ]
+        [ 'en.wikipedia.org', 'User:Bar.010', 'User:Bar.010' ],
+        [ 'en.wikipedia.org', 'User:cebc:2004:f::', 'User:CEBC:2004:F:0:0:0:0:0' ],
+        [ 'en.wikipedia.org', 'User:::', 'User:0:0:0:0:0:0:0:0' ],
+        [ 'en.wikipedia.org', 'User:0:0:0:1::', 'User:0:0:0:1:0:0:0:0' ],
+        [ 'en.wikipedia.org', 'User:3f:535::e:fbb', 'User:3F:535:0:0:0:0:E:FBB' ],
+        [ 'en.wikipedia.org', 'User Talk:::1', 'User talk:0:0:0:0:0:0:0:1'],
+        [ 'en.wikipedia.org', 'User_Talk:::1', 'User talk:0:0:0:0:0:0:0:1'],
+        [ 'en.wikipedia.org', 'User_talk:::1', 'User talk:0:0:0:0:0:0:0:1'],
+        [ 'en.wikipedia.org', 'User_talk:::1/24', 'User talk:0:0:0:0:0:0:0:1/24'],
+        // Case-sensitive namespace
+        [ 'en.wikipedia.org', 'Gadget definition:test', 'Gadget definition:test'],
 
     ];
 
