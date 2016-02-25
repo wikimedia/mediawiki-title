@@ -164,6 +164,7 @@ describe('Normalization', function() {
         [ 'en.wikipedia.org', 'Foo:bar', 'Foo:bar'],
         [ 'en.wikipedia.org', 'Talk: foo', 'Talk:Foo'],
         [ 'en.wikipedia.org', 'int:eger', 'Int:eger'],
+        [ 'en.wikipedia.org', 'WP:eger', 'Wikipedia:Eger'],
 
         // User IP sanitizations
         [ 'en.wikipedia.org', 'User:::1', 'User:0:0:0:0:0:0:0:1'],
