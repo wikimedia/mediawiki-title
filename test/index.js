@@ -165,7 +165,11 @@ describe('Normalization', function() {
         [ 'en.wikipedia.org', 'Talk: foo', 'Talk:Foo'],
         [ 'en.wikipedia.org', 'int:eger', 'Int:eger'],
         [ 'en.wikipedia.org', 'WP:eger', 'Wikipedia:Eger'],
-
+        // Special handling for `i` first character
+        [ 'tr.wikipedia.org', 'iTestTest', 'İTestTest'],
+        [ 'az.wikipedia.org', 'iTestTest', 'İTestTest'],
+        [ 'kk.wikipedia.org', 'iTestTest', 'İTestTest'],
+        [ 'kaa.wikipedia.org', 'iTestTest', 'İTestTest'],
         // User IP sanitizations
         [ 'en.wikipedia.org', 'User:::1', 'User:0:0:0:0:0:0:0:1'],
         [ 'en.wikipedia.org', 'User:0:0:0:0:0:0:0:1', 'User:0:0:0:0:0:0:0:1'],
