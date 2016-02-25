@@ -19,6 +19,10 @@
   "bugs": {
     "url": "https://phabricator.wikimedia.org/tag/services/"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wikimedia/mediawiki-title.git"
+  },
   "dependencies": {
     "bluebird": "^3.1.1",
     "preq": "^0.4.8"
