@@ -2,6 +2,7 @@
 
 var assert = require('assert');
 var Normalizer = require('../lib/index');
+var utils = require('../lib/utils');
 
 // Run jshint as part of normal testing
 require('mocha-jshint')();
@@ -140,7 +141,10 @@ describe('Validation', function () {
         [ 'Category:' + new Array(248).join('x') ],
         // Special pages can have longer titles
         [ 'Special:' + new Array(500).join('x') ],
-        [ new Array(252).join('x') ]
+        [ new Array(252).join('x') ],
+        [ '-' ],
+        [ 'aũ' ],
+        [ '"Believing_Women"_in_Islam._Unreading_Patriarchal_Interpretations_of_the_Qur\\\'ān']
     ];
 
     validTitles.forEach(function(title) {
@@ -205,6 +209,75 @@ describe('Normalization', function() {
             .then(function(res) {
                 assert.deepEqual(res, test[2]);
             });
+        });
+    });
+});
+
+describe('Utilities', function () {
+    var data = [
+        [
+            ' %!"$&\'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+',
+            ' %!"$&\'()*,\\-./0-9:;=?@A-Z\\\\\\^_`a-z~+\\u0080-\\uFFFF',
+        ],
+        [
+            'QWERTYf-\\xFF+',
+            'QWERTYf-\\x7F+\\u0080-\\uFFFF',
+        ],
+        [
+            'QWERTY\\x66-\\xFD+',
+            'QWERTYf-\\x7F+\\u0080-\\uFFFF',
+        ],
+        [
+            'QWERTYf-y+',
+            'QWERTYf-y+',
+        ],
+        [
+            'QWERTYf-\\x80+',
+            'QWERTYf-\\x7F+\\u0080-\\uFFFF',
+        ],
+        [
+            'QWERTY\\x66-\\x80+\\x23',
+            'QWERTYf-\\x7F+#\\u0080-\\uFFFF',
+        ],
+        [
+            'QWERTY\\x66-\\x80+\\xD3',
+            'QWERTYf-\\x7F+\\u0080-\\uFFFF',
+        ],
+        [
+            '\\\\\\x99',
+            '\\\\\\u0080-\\uFFFF',
+        ],
+        [
+            '-\\x99',
+            '\\-\\u0080-\\uFFFF',
+        ],
+        [
+            'QWERTY\\-\\x99',
+            'QWERTY\\-\\u0080-\\uFFFF',
+        ],
+        [
+            '\\\\x99',
+            '\\\\x99',
+        ],
+        [
+            'A-\\x9F',
+            'A-\\x7F\\u0080-\\uFFFF',
+        ],
+        [
+            '\\x66-\\x77QWERTY\\x88-\\x91FXZ',
+            'f-wQWERTYFXZ\\u0080-\\uFFFF',
+        ],
+        [
+            '\\x66-\\x99QWERTY\\xAA-\\xEEFXZ',
+            'f-\\x7FQWERTYFXZ\\u0080-\\uFFFF',
+        ]
+    ];
+
+    var idx = 0;
+    data.forEach(function(test) {
+        idx++;
+        it('Should covert byte range. Test ' + idx, function () {
+            assert.deepEqual(utils.convertByteClassToUnicodeClass(test[0]), test[1]);
         });
     });
 });
