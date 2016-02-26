@@ -3,6 +3,8 @@
 var assert = require('assert');
 var Normalizer = require('../lib/index');
 var utils = require('../lib/utils');
+var preq = require('preq');
+var P = require('bluebird');
 
 // Run jshint as part of normal testing
 require('mocha-jshint')();
@@ -278,6 +280,33 @@ describe('Utilities', function () {
         idx++;
         it('Should covert byte range. Test ' + idx, function () {
             assert.deepEqual(utils.convertByteClassToUnicodeClass(test[0]), test[1]);
+        });
+    });
+
+    it('Should fetch domains', function() {
+        return preq.get({
+            uri: 'https://en.wikipedia.org/w/api.php?action=sitematrix&format=json'
+        })
+        .then(function(res) {
+            return Object.keys(res.body.sitematrix)
+            .filter(function(idx) {
+                return idx !== 'count' && idx !== 'specials';
+            })
+            .map(function (idx) {
+                return res.body.sitematrix[idx].site[0].url.replace(/^https?:\/\//, '');
+            });
+        })
+        .then(function (domains) {
+            describe('Various domains', function() {
+                domains.forEach(function (domain) {
+                    it('Should work for ' + domain, function() {
+                        return normalizer.normalize('1', domain)
+                        .then(function (res) {
+                            assert.deepEqual(res, '1');
+                        });
+                    });
+                });
+            });
         });
     });
 });
