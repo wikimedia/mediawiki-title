@@ -12,8 +12,24 @@ require('mocha-jshint')();
 require('mocha-jscs')();
 
 var normalizer = new Normalizer({
-    apiURI: function (domain) {
-        return 'https://' + domain + '/w/api.php';
+    getSiteInfo: function (domain) {
+        return preq.post({
+            uri: 'https://' + domain + '/w/api.php',
+            body: {
+                action: 'query',
+                meta: 'siteinfo',
+                siprop: 'general|namespaces|namespacealiases',
+                format: 'json'
+            }
+        })
+        .then(function(res) {
+            return {
+                lang: res.body.query.general.lang,
+                legaltitlechars: res.body.query.general.legaltitlechars,
+                namespaces: res.body.query.namespaces,
+                namespacealiases: res.body.query.namespacealiases
+            }
+        });
     }
 });
 

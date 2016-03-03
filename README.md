@@ -4,8 +4,8 @@ Mediawiki title normalizetion, that conforms to the normalization rules used in 
 In general, the page title is converted to the mediawiki DB key format by trimming spaces, replacing whitespace symbols to underscores
 and applying wiki-specific capitalizetion rules. The namespace name is converted to a localized canonical name.
 
-<a name="API"></a>
-## API
+<a name="Normalizer"></a>
+## Normalizer
 
 * [Normalizer](#Normalizer)
     * [new Normalizer(options)](#new_Normalizer_new)
@@ -15,10 +15,11 @@ and applying wiki-specific capitalizetion rules. The namespace name is converted
 ### new Normalizer(options)
 Creates an instance of title normalizer.
 
+
 | Param | Type | Description |
 | --- | --- | --- |
 | options | <code>Object</code> | the normalizer options |
-| options.apiURI | <code>function</code> | a function                 that takes a domain string and returns back                 an API URI that needs to be contacted to get                 the site information used for normalization. |
+| options.getSiteInfo | <code>function</code> | a function                 that takes a domain string and returns back                 the information about the site. The info is cached                 in-memory, so there's no need for external caching. |
 
 <a name="Normalizer+normalize"></a>
 ### normalizer.normalize(title, domain) ⇒ <code>P.&lt;string&gt;</code>
@@ -33,6 +34,20 @@ Normalize a title according to the rules of <domain>
 | title | <code>string</code> | the page title to normalize. |
 | domain | <code>string</code> | the domain page belongs to. |
 
+<a name="SiteInfo"></a>
+## SiteInfo : <code>Object</code>
+Information about a wikimedia site required to make correct
+normalization.
+  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| lang | <code>string</code> | Site language code. |
+| legaltitlechars | <code>string</code> | A perl-like regex for characters allowed in the page title. |
+| namespaces | <code>Object</code> | Site namespaces info in the same format as returned by PHP api. |
+| namespacealiases | <code>Object</code> | Site namespace aliases in the same format as returned by PHP api. |
+
 ## Usage
 
 The library returns a [Bluebird](bluebirdjs.com) promise of a normalized title. 
@@ -41,7 +56,20 @@ cached within the `Normalizer` instance, so reusing the instance is highly recom
 
 ```javascript
 var normalizer = new Normalizer({
-  apiURI: function(domain) { return 'https://' + domain + '/w/api.php'; }
+  getSiteInfo: function(domain) { 
+    return {
+      lang: 'en',
+      legaltitlechars: " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+",
+      namespaces: {
+      	"0": {
+		  id: 0,
+          case: "first-letter",
+          content: "",
+          "*": ""
+        },
+      }
+    }; 
+  }
 });
 
 normalizer.normalize(title, 'en.wikipedia.org')

@@ -1,6 +1,6 @@
 {
   "name": "mediawiki-title",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Title normalization library for mediawiki",
   "main": "lib/index.js",
   "scripts": {
@@ -23,16 +23,13 @@
     "type": "git",
     "url": "git://github.com/wikimedia/mediawiki-title.git"
   },
-  "dependencies": {
-    "bluebird": "^3.1.1",
-    "preq": "^0.4.8"
-  },
   "devDependencies": {
     "coveralls": "^2.11.6",
     "istanbul": "^0.4.2",
     "mocha": "^2.3.4",
     "mocha-jscs": "^4.0.0",
     "mocha-jshint": "^2.2.6",
-    "mocha-lcov-reporter": "^1.0.0"
+    "mocha-lcov-reporter": "^1.0.0",
+    "preq": "^0.4.8"
   }
 }
