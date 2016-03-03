@@ -57,7 +57,7 @@ cached within the `Normalizer` instance, so reusing the instance is highly recom
 ```javascript
 var normalizer = new Normalizer({
   getSiteInfo: function(domain) { 
-    return {
+    return Promise.resolve({
       lang: 'en',
       legaltitlechars: " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+",
       namespaces: {
@@ -68,7 +68,7 @@ var normalizer = new Normalizer({
           "*": ""
         },
       }
-    }; 
+    }); 
   }
 });
 
