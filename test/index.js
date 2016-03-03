@@ -4,7 +4,6 @@ var assert = require('assert');
 var Normalizer = require('../lib/index');
 var utils = require('../lib/utils');
 var preq = require('preq');
-var P = require('bluebird');
 
 // Run jshint as part of normal testing
 require('mocha-jshint')();
