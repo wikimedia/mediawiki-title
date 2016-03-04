@@ -180,12 +180,12 @@ describe('Normalization', function() {
         [ 'en.wikipedia.org', 'User:::', 'User:0:0:0:0:0:0:0:0' ],
         [ 'en.wikipedia.org', 'User:0:0:0:1::', 'User:0:0:0:1:0:0:0:0' ],
         [ 'en.wikipedia.org', 'User:3f:535::e:fbb', 'User:3F:535:0:0:0:0:E:FBB' ],
-        [ 'en.wikipedia.org', 'User Talk:::1', 'User talk:0:0:0:0:0:0:0:1'],
-        [ 'en.wikipedia.org', 'User_Talk:::1', 'User talk:0:0:0:0:0:0:0:1'],
-        [ 'en.wikipedia.org', 'User_talk:::1', 'User talk:0:0:0:0:0:0:0:1'],
-        [ 'en.wikipedia.org', 'User_talk:::1/24', 'User talk:0:0:0:0:0:0:0:1/24'],
+        [ 'en.wikipedia.org', 'User Talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
+        [ 'en.wikipedia.org', 'User_Talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
+        [ 'en.wikipedia.org', 'User_talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
+        [ 'en.wikipedia.org', 'User_talk:::1/24', 'User_talk:0:0:0:0:0:0:0:1/24'],
         // Case-sensitive namespace
-        [ 'en.wikipedia.org', 'Gadget definition:test', 'Gadget definition:test'],
+        [ 'en.wikipedia.org', 'Gadget definition:test', 'Gadget_definition:test'],
         [ 'en.wikipedia.org', 'user:pchelolo', 'User:Pchelolo'],
 
     ];
