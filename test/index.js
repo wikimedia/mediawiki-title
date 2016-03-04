@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var Normalizer = require('../lib/index');
+var normalize = require('../lib/index').normalize;
 var utils = require('../lib/utils');
 var preq = require('preq');
 
@@ -10,68 +10,31 @@ require('mocha-jshint')();
 // Run jscs as part of normal testing
 require('mocha-jscs')();
 
-var normalizer = new Normalizer({
-    getSiteInfo: function (domain) {
-        return preq.post({
-            uri: 'https://' + domain + '/w/api.php',
-            body: {
-                action: 'query',
-                meta: 'siteinfo',
-                siprop: 'general|namespaces|namespacealiases',
-                format: 'json'
-            }
-        })
-        .then(function(res) {
-            return {
-                lang: res.body.query.general.lang,
-                legaltitlechars: res.body.query.general.legaltitlechars,
-                namespaces: res.body.query.namespaces,
-                namespacealiases: res.body.query.namespacealiases
-            }
-        });
+var siteInfoCache = {};
+var getSiteInfo = function(domain) {
+    if (siteInfoCache[domain]) {
+        return siteInfoCache[domain];
     }
-});
 
-describe('General', function() {
-    it('should throw error for non-string title', function() {
-        try {
-            normalizer.normalize(1, 'en.wikipedia.org');
-            throw new Error('Should throw error!');
-        } catch (e) {
-            assert.deepEqual(e.constructor, TypeError);
-            assert.deepEqual(e.message, 'Invalid type of title parameter. Must be a string');
+    siteInfoCache[domain] = preq.post({
+        uri: 'https://' + domain + '/w/api.php',
+        body: {
+            action: 'query',
+            meta: 'siteinfo',
+            siprop: 'general|namespaces|namespacealiases',
+            format: 'json'
+        }
+    })
+    .then(function(res) {
+        return {
+            lang: res.body.query.general.lang,
+            legaltitlechars: res.body.query.general.legaltitlechars,
+            namespaces: res.body.query.namespaces,
+            namespacealiases: res.body.query.namespacealiases
         }
     });
-    it('should throw error for non-string domain', function() {
-        try {
-            normalizer.normalize('a', 2);
-            throw new Error('Should throw error!');
-        } catch (e) {
-            assert.deepEqual(e.constructor, TypeError);
-            assert.deepEqual(e.message, 'Invalid type of domain parameter. Must be a string');
-        }
-    });
-    it('should throw error for undefined options', function() {
-        try {
-            new Normalizer();
-            throw new Error('Should throw error!');
-        } catch (e) {
-            assert.deepEqual(e.constructor, TypeError);
-            assert.deepEqual(e.message, 'Invalid options for Normalizer constructor');
-        }
-    });
-    it('should throw error for invalid apiURI', function() {
-        try {
-            new Normalizer({
-                apiURI: 'test'
-            });
-            throw new Error('Should throw error!');
-        } catch (e) {
-            assert.deepEqual(e.constructor, TypeError);
-            assert.deepEqual(e.message, 'Invalid options for Normalizer constructor');
-        }
-    });
-});
+    return siteInfoCache[domain];
+};
 
 describe('Validation', function () {
     var invalidTitles = [['', 'title-invalid-empty'],
@@ -127,7 +90,10 @@ describe('Validation', function () {
         }
 
         it('should throw ' + testCase[1] + ' error for ' + name, function() {
-            return normalizer.normalize(testCase[0], 'en.wikipedia.org')
+            return getSiteInfo('en.wikipedia.org')
+            .then(function(siteInfo) {
+                return normalize(testCase[0], siteInfo);
+            })
             .then(function () {
                 throw new Error('Error should be thrown');
             }, function (e) {
@@ -171,7 +137,10 @@ describe('Validation', function () {
         }
 
         it(name + ' should be valid', function() {
-            return normalizer.normalize(title[0], 'en.wikipedia.org')
+            return getSiteInfo('en.wikipedia.org')
+            .then(function(siteInfo) {
+                return normalize(title[0], siteInfo);
+            })
         });
     });
 });
@@ -222,7 +191,10 @@ describe('Normalization', function() {
 
     testCases.forEach(function (test) {
         it('For ' + test[0] + ' should normalize ' + test[1] + ' to ' + test[2], function() {
-            return normalizer.normalize(test[1], test[0])
+            return getSiteInfo(test[0])
+            .then(function(siteInfo) {
+                return normalize(test[1], siteInfo);
+            })
             .then(function(res) {
                 assert.deepEqual(res, test[2]);
             });
@@ -315,7 +287,10 @@ describe('Utilities', function () {
             describe('Various domains', function() {
                 domains.forEach(function (domain) {
                     it('Should work for ' + domain, function() {
-                        return normalizer.normalize('1', domain)
+                        return getSiteInfo(domain)
+                        .then(function(siteInfo) {
+                            return normalize('1', siteInfo);
+                        })
                         .then(function (res) {
                             assert.deepEqual(res, '1');
                         });
