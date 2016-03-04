@@ -186,6 +186,7 @@ describe('Normalization', function() {
         [ 'en.wikipedia.org', 'User_talk:::1/24', 'User talk:0:0:0:0:0:0:0:1/24'],
         // Case-sensitive namespace
         [ 'en.wikipedia.org', 'Gadget definition:test', 'Gadget definition:test'],
+        [ 'en.wikipedia.org', 'user:pchelolo', 'User:Pchelolo'],
 
     ];
 
