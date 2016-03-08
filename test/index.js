@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var normalize = require('../lib/index').normalize;
+var Title = require('../lib/index').Title;
 var utils = require('../lib/utils');
 var preq = require('preq');
 
@@ -29,6 +29,7 @@ var getSiteInfo = function(domain) {
         return {
             lang: res.body.query.general.lang,
             legaltitlechars: res.body.query.general.legaltitlechars,
+            case: res.body.query.general.case,
             namespaces: res.body.query.namespaces,
             namespacealiases: res.body.query.namespacealiases
         }
@@ -92,7 +93,7 @@ describe('Validation', function () {
         it('should throw ' + testCase[1] + ' error for ' + name, function() {
             return getSiteInfo('en.wikipedia.org')
             .then(function(siteInfo) {
-                return normalize(testCase[0], siteInfo);
+                return Title.newFromText(testCase[0], siteInfo);
             })
             .then(function () {
                 throw new Error('Error should be thrown');
@@ -139,7 +140,7 @@ describe('Validation', function () {
         it(name + ' should be valid', function() {
             return getSiteInfo('en.wikipedia.org')
             .then(function(siteInfo) {
-                return normalize(title[0], siteInfo);
+                return Title.newFromText(title[0], siteInfo);
             })
         });
     });
@@ -185,7 +186,6 @@ describe('Normalization', function() {
         [ 'en.wikipedia.org', 'User_talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
         [ 'en.wikipedia.org', 'User_talk:::1/24', 'User_talk:0:0:0:0:0:0:0:1/24'],
         // Case-sensitive namespace
-        [ 'en.wikipedia.org', 'Gadget definition:test', 'Gadget_definition:test'],
         [ 'en.wikipedia.org', 'user:pchelolo', 'User:Pchelolo'],
 
     ];
@@ -194,7 +194,7 @@ describe('Normalization', function() {
         it('For ' + test[0] + ' should normalize ' + test[1] + ' to ' + test[2], function() {
             return getSiteInfo(test[0])
             .then(function(siteInfo) {
-                return normalize(test[1], siteInfo);
+                return Title.newFromText(test[1], siteInfo).getPrefixedDBKey();
             })
             .then(function(res) {
                 assert.deepEqual(res, test[2]);
@@ -290,10 +290,10 @@ describe('Utilities', function () {
                     it('Should work for ' + domain, function() {
                         return getSiteInfo(domain)
                         .then(function(siteInfo) {
-                            return normalize('1', siteInfo);
+                            return Title.newFromText('1', siteInfo);
                         })
                         .then(function (res) {
-                            assert.deepEqual(res, '1');
+                            assert.deepEqual(res.getPrefixedDBKey(), '1');
                         });
                     });
                 });
