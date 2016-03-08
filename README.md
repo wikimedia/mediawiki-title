@@ -114,7 +114,7 @@ Creates a namespace object for a `Main` namespace.
 * [Title](#Title)
     * [new Title(key, namespace, siteInfo, [fragment])](#new_Title_new)
     * _instance_
-        * [.getNormalizedText()](#Title+getNormalizedText) ⇒ <code>string</code>
+        * [.getPrefixedDBKey()](#Title+getPrefixedDBKey) ⇒ <code>string</code>
         * [.getNamespace()](#Title+getNamespace) ⇒ <code>[Namespace](#Namespace)</code>
     * _static_
         * [.fromPrefixedText(title, siteInfo)](#Title.fromPrefixedText) ⇒ <code>[Title](#Title)</code>
@@ -131,8 +131,8 @@ Creates a new title object with article the dbKey and namespace
 | siteInfo | <code>[SiteInfo](#SiteInfo)</code> | The site metadata. |
 | [fragment] | <code>string</code> | The fragment of the title. |
 
-<a name="Title+getNormalizedText"></a>
-### title.getNormalizedText() ⇒ <code>string</code>
+<a name="Title+getPrefixedDBKey"></a>
+### title.getPrefixedDBKey() ⇒ <code>string</code>
 Returns the normalized article title and namespace.
 
 **Kind**: instance method of <code>[Title](#Title)</code>  
@@ -191,7 +191,7 @@ var result = Title.fromPrefixedText('some_title', {
 			},
 		}
 });
-console.log(result.getNormalizedText())
+console.log(result.getPrefixedDBKey());
 ```
 
 ## Bug reporting

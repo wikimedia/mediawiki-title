@@ -194,7 +194,7 @@ describe('Normalization', function() {
         it('For ' + test[0] + ' should normalize ' + test[1] + ' to ' + test[2], function() {
             return getSiteInfo(test[0])
             .then(function(siteInfo) {
-                return Title.fromPrefixedText(test[1], siteInfo).getNormalizedText();
+                return Title.fromPrefixedText(test[1], siteInfo).getPrefixedDBKey();
             })
             .then(function(res) {
                 assert.deepEqual(res, test[2]);
@@ -293,7 +293,7 @@ describe('Utilities', function () {
                             return Title.fromPrefixedText('1', siteInfo);
                         })
                         .then(function (res) {
-                            assert.deepEqual(res.getNormalizedText(), '1');
+                            assert.deepEqual(res.getPrefixedDBKey(), '1');
                         });
                     });
                 });
