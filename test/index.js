@@ -92,7 +92,7 @@ describe('Validation', function () {
         it('should throw ' + testCase[1] + ' error for ' + name, function() {
             return getSiteInfo('en.wikipedia.org')
             .then(function(siteInfo) {
-                return Title.fromPrefixedText(testCase[0], siteInfo);
+                return Title.newFromText(testCase[0], siteInfo);
             })
             .then(function () {
                 throw new Error('Error should be thrown');
@@ -139,7 +139,7 @@ describe('Validation', function () {
         it(name + ' should be valid', function() {
             return getSiteInfo('en.wikipedia.org')
             .then(function(siteInfo) {
-                return Title.fromPrefixedText(title[0], siteInfo);
+                return Title.newFromText(title[0], siteInfo);
             })
         });
     });
@@ -194,7 +194,7 @@ describe('Normalization', function() {
         it('For ' + test[0] + ' should normalize ' + test[1] + ' to ' + test[2], function() {
             return getSiteInfo(test[0])
             .then(function(siteInfo) {
-                return Title.fromPrefixedText(test[1], siteInfo).getPrefixedDBKey();
+                return Title.newFromText(test[1], siteInfo).getPrefixedDBKey();
             })
             .then(function(res) {
                 assert.deepEqual(res, test[2]);
@@ -290,7 +290,7 @@ describe('Utilities', function () {
                     it('Should work for ' + domain, function() {
                         return getSiteInfo(domain)
                         .then(function(siteInfo) {
-                            return Title.fromPrefixedText('1', siteInfo);
+                            return Title.newFromText('1', siteInfo);
                         })
                         .then(function (res) {
                             assert.deepEqual(res.getPrefixedDBKey(), '1');
