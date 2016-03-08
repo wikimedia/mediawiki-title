@@ -29,6 +29,7 @@ var getSiteInfo = function(domain) {
         return {
             lang: res.body.query.general.lang,
             legaltitlechars: res.body.query.general.legaltitlechars,
+            case: res.body.query.general.case,
             namespaces: res.body.query.namespaces,
             namespacealiases: res.body.query.namespacealiases
         }
@@ -185,7 +186,6 @@ describe('Normalization', function() {
         [ 'en.wikipedia.org', 'User_talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
         [ 'en.wikipedia.org', 'User_talk:::1/24', 'User_talk:0:0:0:0:0:0:0:1/24'],
         // Case-sensitive namespace
-        [ 'en.wikipedia.org', 'Gadget definition:test', 'Gadget_definition:test'],
         [ 'en.wikipedia.org', 'user:pchelolo', 'User:Pchelolo'],
 
     ];

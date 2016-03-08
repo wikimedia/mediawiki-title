@@ -35,7 +35,6 @@ normalization.</p>
         * [.isUser()](#Namespace+isUser) ⇒ <code>boolean</code>
         * [.isUserTalk()](#Namespace+isUserTalk) ⇒ <code>boolean</code>
         * [.getNormalizedText()](#Namespace+getNormalizedText) ⇒ <code>string</code>
-        * [.getCase()](#Namespace+getCase) ⇒ <code>string</code>
     * _static_
         * [.fromText(text, siteInfo)](#Namespace.fromText) ⇒ <code>[Namespace](#Namespace)</code> &#124; <code>undefined</code>
         * [.main(siteInfo)](#Namespace.main) ⇒ <code>[Namespace](#Namespace)</code>
@@ -80,11 +79,6 @@ Checks whether namespace is `User_Talk`.
 Get the canonical name string for this namespace.
 
 **Kind**: instance method of <code>[Namespace](#Namespace)</code>  
-<a name="Namespace+getCase"></a>
-### namespace.getCase() ⇒ <code>string</code>
-Returns the case parameter for the namespace
-
-**Kind**: instance method of <code>[Namespace](#Namespace)</code>  
 <a name="Namespace.fromText"></a>
 ### Namespace.fromText(text, siteInfo) ⇒ <code>[Namespace](#Namespace)</code> &#124; <code>undefined</code>
 Creates a namespace instance from namespace text or a namespace alias
@@ -117,7 +111,7 @@ Creates a namespace object for a `Main` namespace.
         * [.getPrefixedDBKey()](#Title+getPrefixedDBKey) ⇒ <code>string</code>
         * [.getNamespace()](#Title+getNamespace) ⇒ <code>[Namespace](#Namespace)</code>
     * _static_
-        * [.fromPrefixedText(title, siteInfo)](#Title.fromPrefixedText) ⇒ <code>[Title](#Title)</code>
+        * [.newFromText(title, siteInfo)](#Title.newFromText) ⇒ <code>[Title](#Title)</code>
 
 <a name="new_Title_new"></a>
 ### new Title(key, namespace, siteInfo, [fragment])
@@ -127,7 +121,7 @@ Creates a new title object with article the dbKey and namespace
 | Param | Type | Description |
 | --- | --- | --- |
 | key | <code>string</code> | The article title in a form of the dbKey. |
-| namespace | <code>[Namespace](#Namespace)</code> | The article namespace. |
+| namespace | <code>[Namespace](#Namespace)</code> &#124; <code>number</code> | The article namespace. |
 | siteInfo | <code>[SiteInfo](#SiteInfo)</code> | The site metadata. |
 | [fragment] | <code>string</code> | The fragment of the title. |
 
@@ -141,8 +135,8 @@ Returns the normalized article title and namespace.
 Returns the namespace of an article.
 
 **Kind**: instance method of <code>[Title](#Title)</code>  
-<a name="Title.fromPrefixedText"></a>
-### Title.fromPrefixedText(title, siteInfo) ⇒ <code>[Title](#Title)</code>
+<a name="Title.newFromText"></a>
+### Title.newFromText(title, siteInfo) ⇒ <code>[Title](#Title)</code>
 Normalize a title according to the rules of <domain>
 
 **Kind**: static method of <code>[Title](#Title)</code>  
@@ -165,12 +159,9 @@ normalization.
 | --- | --- | --- |
 | lang | <code>string</code> | Site language code. |
 | legaltitlechars | <code>string</code> | A perl-like regex for characters allowed in the page title. |
+| case | <code>string</code> | Whether to capitalize the first letter of the title. Could be obtained from the `general` section of the `siteInfo` php API response. |
 | namespaces | <code>Object</code> | Site namespaces info in the same format as returned by PHP api. |
 | namespacealiases | <code>Object</code> | Site namespace aliases in the same format as returned by PHP api. |
-
-
-
-
 
 ## Usage
 
