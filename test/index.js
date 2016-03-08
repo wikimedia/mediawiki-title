@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var normalize = require('../lib/index').normalize;
+var Title = require('../lib/index').Title;
 var utils = require('../lib/utils');
 var preq = require('preq');
 
@@ -92,7 +92,7 @@ describe('Validation', function () {
         it('should throw ' + testCase[1] + ' error for ' + name, function() {
             return getSiteInfo('en.wikipedia.org')
             .then(function(siteInfo) {
-                return normalize(testCase[0], siteInfo);
+                return Title.fromPrefixedText(testCase[0], siteInfo);
             })
             .then(function () {
                 throw new Error('Error should be thrown');
@@ -139,7 +139,7 @@ describe('Validation', function () {
         it(name + ' should be valid', function() {
             return getSiteInfo('en.wikipedia.org')
             .then(function(siteInfo) {
-                return normalize(title[0], siteInfo);
+                return Title.fromPrefixedText(title[0], siteInfo);
             })
         });
     });
@@ -194,7 +194,7 @@ describe('Normalization', function() {
         it('For ' + test[0] + ' should normalize ' + test[1] + ' to ' + test[2], function() {
             return getSiteInfo(test[0])
             .then(function(siteInfo) {
-                return normalize(test[1], siteInfo);
+                return Title.fromPrefixedText(test[1], siteInfo).getNormalizedText();
             })
             .then(function(res) {
                 assert.deepEqual(res, test[2]);
@@ -290,10 +290,10 @@ describe('Utilities', function () {
                     it('Should work for ' + domain, function() {
                         return getSiteInfo(domain)
                         .then(function(siteInfo) {
-                            return normalize('1', siteInfo);
+                            return Title.fromPrefixedText('1', siteInfo);
                         })
                         .then(function (res) {
-                            assert.deepEqual(res, '1');
+                            assert.deepEqual(res.getNormalizedText(), '1');
                         });
                     });
                 });

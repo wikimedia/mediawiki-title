@@ -4,28 +4,149 @@ Mediawiki title normalizetion, that conforms to the normalization rules used in 
 In general, the page title is converted to the mediawiki DB key format by trimming spaces, replacing whitespace symbols to underscores
 and applying wiki-specific capitalizetion rules. The namespace name is converted to a localized canonical name.
 
-## Functions
+## Classes
 
 <dl>
-<dt><a href="#normalize">normalize(title, siteInfo)</a> ⇒ <code>string</code></dt>
-<dd><p>Normalize a title according to the rules of <domain></p>
-</dd>
+<dt><a href="#Namespace">Namespace</a></dt>
+<dd></dd>
+<dt><a href="#Title">Title</a></dt>
+<dd></dd>
 </dl>
 
 ## Typedefs
 
 <dl>
 <dt><a href="#SiteInfo">SiteInfo</a> : <code>Object</code></dt>
-<dd><p>Information about a wikimedia site required to make correct normalization.</p>
+<dd><p>Information about a wikimedia site required to make correct
+normalization.</p>
 </dd>
 </dl>
 
-<a name="normalize"></a>
-## normalize(title, siteInfo) ⇒ <code>string</code>
+<a name="Namespace"></a>
+## Namespace
+**Kind**: global class  
+
+* [Namespace](#Namespace)
+    * [new Namespace(id, siteInfo)](#new_Namespace_new)
+    * _instance_
+        * [.isSpecial()](#Namespace+isSpecial) ⇒ <code>boolean</code>
+        * [.isMain()](#Namespace+isMain) ⇒ <code>boolean</code>
+        * [.isTalk()](#Namespace+isTalk) ⇒ <code>boolean</code>
+        * [.isUser()](#Namespace+isUser) ⇒ <code>boolean</code>
+        * [.isUserTalk()](#Namespace+isUserTalk) ⇒ <code>boolean</code>
+        * [.getNormalizedText()](#Namespace+getNormalizedText) ⇒ <code>string</code>
+        * [.getCase()](#Namespace+getCase) ⇒ <code>string</code>
+    * _static_
+        * [.fromText(text, siteInfo)](#Namespace.fromText) ⇒ <code>[Namespace](#Namespace)</code> &#124; <code>undefined</code>
+        * [.main(siteInfo)](#Namespace.main) ⇒ <code>[Namespace](#Namespace)</code>
+
+<a name="new_Namespace_new"></a>
+### new Namespace(id, siteInfo)
+Represents a wiki namespace
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>number</code> | The namespace identifier |
+| siteInfo | <code>[SiteInfo](#SiteInfo)</code> | The site metadata information. |
+
+<a name="Namespace+isSpecial"></a>
+### namespace.isSpecial() ⇒ <code>boolean</code>
+Checks whether namespace is `Special`.
+
+**Kind**: instance method of <code>[Namespace](#Namespace)</code>  
+<a name="Namespace+isMain"></a>
+### namespace.isMain() ⇒ <code>boolean</code>
+Checks whether namespace is `Main`.
+
+**Kind**: instance method of <code>[Namespace](#Namespace)</code>  
+<a name="Namespace+isTalk"></a>
+### namespace.isTalk() ⇒ <code>boolean</code>
+Checks whether namespace is `Talk`.
+
+**Kind**: instance method of <code>[Namespace](#Namespace)</code>  
+<a name="Namespace+isUser"></a>
+### namespace.isUser() ⇒ <code>boolean</code>
+Checks whether namespace is `User`.
+
+**Kind**: instance method of <code>[Namespace](#Namespace)</code>  
+<a name="Namespace+isUserTalk"></a>
+### namespace.isUserTalk() ⇒ <code>boolean</code>
+Checks whether namespace is `User_Talk`.
+
+**Kind**: instance method of <code>[Namespace](#Namespace)</code>  
+<a name="Namespace+getNormalizedText"></a>
+### namespace.getNormalizedText() ⇒ <code>string</code>
+Get the canonical name string for this namespace.
+
+**Kind**: instance method of <code>[Namespace](#Namespace)</code>  
+<a name="Namespace+getCase"></a>
+### namespace.getCase() ⇒ <code>string</code>
+Returns the case parameter for the namespace
+
+**Kind**: instance method of <code>[Namespace](#Namespace)</code>  
+<a name="Namespace.fromText"></a>
+### Namespace.fromText(text, siteInfo) ⇒ <code>[Namespace](#Namespace)</code> &#124; <code>undefined</code>
+Creates a namespace instance from namespace text or a namespace alias
+
+**Kind**: static method of <code>[Namespace](#Namespace)</code>  
+**Returns**: <code>[Namespace](#Namespace)</code> &#124; <code>undefined</code> - a namespace or undefined if it wasn't found.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| text | <code>string</code> | Namespace name text. |
+| siteInfo | <code>[SiteInfo](#SiteInfo)</code> | the site information. |
+
+<a name="Namespace.main"></a>
+### Namespace.main(siteInfo) ⇒ <code>[Namespace](#Namespace)</code>
+Creates a namespace object for a `Main` namespace.
+
+**Kind**: static method of <code>[Namespace](#Namespace)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| siteInfo | <code>[SiteInfo](#SiteInfo)</code> | the site information. |
+
+<a name="Title"></a>
+## Title
+**Kind**: global class  
+
+* [Title](#Title)
+    * [new Title(key, namespace, siteInfo, [fragment])](#new_Title_new)
+    * _instance_
+        * [.getNormalizedText()](#Title+getNormalizedText) ⇒ <code>string</code>
+        * [.getNamespace()](#Title+getNamespace) ⇒ <code>[Namespace](#Namespace)</code>
+    * _static_
+        * [.fromPrefixedText(title, siteInfo)](#Title.fromPrefixedText) ⇒ <code>[Title](#Title)</code>
+
+<a name="new_Title_new"></a>
+### new Title(key, namespace, siteInfo, [fragment])
+Creates a new title object with article the dbKey and namespace
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>string</code> | The article title in a form of the dbKey. |
+| namespace | <code>[Namespace](#Namespace)</code> | The article namespace. |
+| siteInfo | <code>[SiteInfo](#SiteInfo)</code> | The site metadata. |
+| [fragment] | <code>string</code> | The fragment of the title. |
+
+<a name="Title+getNormalizedText"></a>
+### title.getNormalizedText() ⇒ <code>string</code>
+Returns the normalized article title and namespace.
+
+**Kind**: instance method of <code>[Title](#Title)</code>  
+<a name="Title+getNamespace"></a>
+### title.getNamespace() ⇒ <code>[Namespace](#Namespace)</code>
+Returns the namespace of an article.
+
+**Kind**: instance method of <code>[Title](#Title)</code>  
+<a name="Title.fromPrefixedText"></a>
+### Title.fromPrefixedText(title, siteInfo) ⇒ <code>[Title](#Title)</code>
 Normalize a title according to the rules of <domain>
-  
-**Returns**: <code>string</code> - normalized version of a title.  
-**Access:** public  
+
+**Kind**: static method of <code>[Title](#Title)</code>  
+**Returns**: <code>[Title](#Title)</code> - The resulting title object.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -36,7 +157,8 @@ Normalize a title according to the rules of <domain>
 ## SiteInfo : <code>Object</code>
 Information about a wikimedia site required to make correct
 normalization.
-  
+
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -46,6 +168,10 @@ normalization.
 | namespaces | <code>Object</code> | Site namespaces info in the same format as returned by PHP api. |
 | namespacealiases | <code>Object</code> | Site namespace aliases in the same format as returned by PHP api. |
 
+
+
+
+
 ## Usage
 
 The library returns a [Bluebird](bluebirdjs.com) promise of a normalized title. 
@@ -53,7 +179,7 @@ Wiki-specific rules are fetched from the [api](en.wikipedia.org/w/api.php), and
 cached within the `Normalizer` instance, so reusing the instance is highly recommended.
 
 ```javascript
-var result = normalizer.normalize('some_title', {
+var result = Title.fromPrefixedText('some_title', {
 	lang: 'en',
 	legaltitlechars: " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+",
 	namespaces: {
@@ -65,6 +191,7 @@ var result = normalizer.normalize('some_title', {
 			},
 		}
 });
+console.log(result.getNormalizedText())
 ```
 
 ## Bug reporting
