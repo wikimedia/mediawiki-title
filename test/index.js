@@ -187,6 +187,9 @@ describe('Normalization', function() {
         [ 'en.wikipedia.org', 'User_talk:::1/24', 'User_talk:0:0:0:0:0:0:0:1/24'],
         // Case-sensitive namespace
         [ 'en.wikipedia.org', 'user:pchelolo', 'User:Pchelolo'],
+        [ 'en.wikipedia.org',
+            'list of Neighbours characters (2016)#Tom Quill',
+            'List_of_Neighbours_characters_(2016)#Tom_Quill']
 
     ];
 
