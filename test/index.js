@@ -189,7 +189,7 @@ describe('Normalization', function() {
         [ 'en.wikipedia.org', 'user:pchelolo', 'User:Pchelolo'],
         [ 'en.wikipedia.org',
             'list of Neighbours characters (2016)#Tom Quill',
-            'List_of_Neighbours_characters_(2016)#Tom_Quill']
+            'List_of_Neighbours_characters_(2016)']
 
     ];
 
@@ -204,6 +204,16 @@ describe('Normalization', function() {
             });
         });
     });
+
+    it('Should normalize fragment', function() {
+        return getSiteInfo('en.wikipedia.org')
+        .then(function(siteInfo) {
+            return Title.newFromText('Test#some fragment', siteInfo);
+        })
+        .then(function(res) {
+            assert.deepEqual(res.getFragment(), 'some_fragment');
+        });
+    })
 });
 
 describe('Utilities', function () {
