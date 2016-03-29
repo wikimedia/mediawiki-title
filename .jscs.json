@@ -12,7 +12,10 @@
   "validateIndentation": 4,
   "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
   "requireCapitalizedComments": null,
-  "maximumLineLength": 100,
+  "maximumLineLength": {
+    "value": 100,
+    "allExcept": [ "urlComments" ]
+  },
   "validateQuoteMarks": null,
   "requireTrailingComma": null,
   "disallowTrailingComma": null,

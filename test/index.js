@@ -26,13 +26,7 @@ var getSiteInfo = function(domain) {
         }
     })
     .then(function(res) {
-        return {
-            lang: res.body.query.general.lang,
-            legaltitlechars: res.body.query.general.legaltitlechars,
-            case: res.body.query.general.case,
-            namespaces: res.body.query.namespaces,
-            namespacealiases: res.body.query.namespacealiases
-        }
+        return res.body.query;
     });
     return siteInfoCache[domain];
 };
