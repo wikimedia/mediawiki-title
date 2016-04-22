@@ -162,7 +162,7 @@ Returns the namespace of an article.
 <a name="Title.newFromText"></a>
 
 ### Title.newFromText(title, siteInfo) ⇒ <code>[Title](#Title)</code>
-Normalize a title according to the rules of <domain>
+Normalize a title according to the rules of <code>siteInfo</code>
 
 **Kind**: static method of <code>[Title](#Title)</code>  
 **Returns**: <code>[Title](#Title)</code> - The resulting title object.  
