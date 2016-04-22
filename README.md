@@ -197,8 +197,8 @@ The list of required properties is documented here, others can be removed.
 
 ## Usage
 
-The library returns a [Bluebird](bluebirdjs.com) promise of a normalized title. 
-Wiki-specific rules are fetched from the [api](en.wikipedia.org/w/api.php), and
+The library returns a [Bluebird](http://bluebirdjs.com) promise of a normalized title.
+Wiki-specific rules are fetched from the [api](https://en.wikipedia.org/w/api.php), and
 cached within the `Normalizer` instance, so reusing the instance is highly recommended.
 
 ```javascript
@@ -224,4 +224,3 @@ console.log(result.getPrefixedDBKey());
 
 For bug reporting please use [Phabricator](https://phabricator.wikimedia.org/tag/services/)
 and mark the bugs with `Services` label or contact directly in IRC in the [#wikimedia-services](http://webchat.freenode.net/?channels=wikimedia-services) channel.
-
