@@ -202,12 +202,12 @@ Wiki-specific rules are fetched from the [api](https://en.wikipedia.org/w/api.ph
 cached within the `Normalizer` instance, so reusing the instance is highly recommended.
 
 ```javascript
-var result = Title.fromPrefixedText('some_title', {
-    general: {
-        lang: 'en',
-        legaltitlechars: " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+",
-        case: 'first-letter'
-    },
+var result = Title.newFromText('some_title', {
+    		general: {
+        	lang: 'en',
+        	legaltitlechars: " %!\"$&'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+",
+        	case: 'first-letter'
+    	},
 	namespaces: {
 		"0": {
 			id: 0,
