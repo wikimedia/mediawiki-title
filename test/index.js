@@ -33,7 +33,7 @@ var getSiteInfo = function(domain) {
 
 describe('Validation', function () {
     var invalidTitles = [
-        ['foo�|bar', 'title-invalid-characters'],
+        ['foo�', 'title-invalid-utf8'],
         ['', 'title-invalid-empty'],
         [':', 'title-invalid-empty'],
         ['__  __', 'title-invalid-empty'],
