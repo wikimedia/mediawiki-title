@@ -32,7 +32,9 @@ var getSiteInfo = function(domain) {
 };
 
 describe('Validation', function () {
-    var invalidTitles = [['', 'title-invalid-empty'],
+    var invalidTitles = [
+        ['foo�|bar', 'title-invalid-characters'],
+        ['', 'title-invalid-empty'],
         [':', 'title-invalid-empty'],
         ['__  __', 'title-invalid-empty'],
         ['  __  ', 'title-invalid-empty'],
