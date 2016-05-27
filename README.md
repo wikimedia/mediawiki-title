@@ -197,9 +197,10 @@ The list of required properties is documented here, others can be removed.
 
 ## Usage
 
-The library returns a [Bluebird](http://bluebirdjs.com) promise of a normalized title.
-Wiki-specific rules are fetched from the [api](https://en.wikipedia.org/w/api.php), and
-cached within the `Normalizer` instance, so reusing the instance is highly recommended.
+The library synchronously returns a normalized title. Wiki-specific rules should be fetched from the 
+[MediaWiki API](https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases), 
+and cached outside of the library. The description of the required properties is available in the [SiteInfo](#SiteInfo)
+object docs.
 
 ```javascript
 var result = Title.newFromText('some_title', {
