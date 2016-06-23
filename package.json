@@ -1,6 +1,6 @@
 {
   "name": "mediawiki-title",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Title normalization library for mediawiki",
   "main": "lib/index.js",
   "scripts": {
