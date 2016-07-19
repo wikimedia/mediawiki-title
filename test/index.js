@@ -214,6 +214,28 @@ function doTest(formatversion) {
         })
     });
 
+    describe('Defaults', function() {
+        var testCases = [
+            [ undefined, 'Example.svg', 'Example.svg'],
+            [ 0, 'Example.svg', 'Example.svg'],
+            [ 6, 'Example.svg', 'File:Example.svg'],
+            [ undefined, 'File:Example.svg', 'File:Example.svg'],
+            [ 6, 'File:Example.svg', 'File:Example.svg'],
+            [ 2, 'File:Example.svg', 'File:Example.svg'],
+        ];
+        testCases.forEach(function (test) {
+            it('For ns:' + test[0] + ' should default ' + test[1] + ' to ' + test[2], function() {
+                return getSiteInfo('en.wikipedia.org')
+                .then(function(siteInfo) {
+                    return Title.newFromText(test[1], siteInfo, test[0]).getPrefixedDBKey();
+                })
+                .then(function(res) {
+                    assert.deepEqual(res, test[2]);
+                });
+            });
+        });
+    });
+
     describe('Utilities', function () {
         var data = [
             [
