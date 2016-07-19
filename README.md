@@ -126,7 +126,7 @@ Creates a namespace object for a `Main` namespace.
         * [.getFragment()](#Title+getFragment) ⇒ <code>string</code> &#124; <code>undefined</code>
         * [.getNamespace()](#Title+getNamespace) ⇒ <code>[Namespace](#Namespace)</code>
     * _static_
-        * [.newFromText(title, siteInfo)](#Title.newFromText) ⇒ <code>[Title](#Title)</code>
+        * [.newFromText(title, siteInfo, defaultNs)](#Title.newFromText) ⇒ <code>[Title](#Title)</code>
 
 <a name="new_Title_new"></a>
 
@@ -161,7 +161,7 @@ Returns the namespace of an article.
 **Kind**: instance method of <code>[Title](#Title)</code>  
 <a name="Title.newFromText"></a>
 
-### Title.newFromText(title, siteInfo) ⇒ <code>[Title](#Title)</code>
+### Title.newFromText(title, siteInfo, defaultNs) ⇒ <code>[Title](#Title)</code>
 Normalize a title according to the rules of <code>siteInfo</code>
 
 **Kind**: static method of <code>[Title](#Title)</code>  
