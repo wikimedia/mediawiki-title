@@ -74,7 +74,7 @@ function doTest(formatversion) {
             ['A ~~~~ Signature', 'title-invalid-magic-tilde'],
             ['A ~~~~~ Timestamp', 'title-invalid-magic-tilde'],
             // Length
-            [ new Array(257).join('x'), 'title-invalid-too-long' ],
+            [ new Array(258).join('x'), 'title-invalid-too-long' ],
             [ 'Special:' + new Array(514).join('x'), 'title-invalid-too-long' ],
             // Namespace prefix without actual title
             ['Talk:', 'title-invalid-empty'],
@@ -124,6 +124,7 @@ function doTest(formatversion) {
             // Special pages can have longer titles
             [ 'Special:' + new Array(500).join('x') ],
             [ new Array(252).join('x') ],
+            [ new Array(257).join('x') ],
             [ '-' ],
             [ 'aũ' ],
             [ '"Believing_Women"_in_Islam._Unreading_Patriarchal_Interpretations_of_the_Qur\\\'ān']
