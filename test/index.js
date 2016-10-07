@@ -151,6 +151,7 @@ function doTest(formatversion) {
             [ 'en.wikipedia.org', ':Test', 'Test'],
             [ 'en.wikipedia.org', ': Test', 'Test'],
             [ 'en.wikipedia.org', ':_Test_', 'Test'],
+            [ 'de.wikipedia.org', 'ß', 'ß'],
             [ 'en.wikipedia.org', 'Foo:bar', 'Foo:bar'],
             [ 'en.wikipedia.org', 'Talk: foo', 'Talk:Foo'],
             [ 'en.wikipedia.org', 'int:eger', 'Int:eger'],
