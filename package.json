@@ -23,6 +23,9 @@
     "type": "git",
     "url": "git://github.com/wikimedia/mediawiki-title.git"
   },
+  "dependencies": {
+    "string.prototype.at": "^0.2.0"
+  },
   "devDependencies": {
     "coveralls": "^2.11.6",
     "istanbul": "^0.4.2",
