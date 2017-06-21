@@ -151,6 +151,7 @@ function doTest(formatversion) {
             [ 'en.wikipedia.org', ':Test', 'Test'],
             [ 'en.wikipedia.org', ': Test', 'Test'],
             [ 'en.wikipedia.org', ':_Test_', 'Test'],
+            [ 'en.wikipedia.org', 'Test 123  456   789', 'Test_123_456_789' ],
             [ 'en.wikipedia.org', '💩', '💩'],
             [ 'en.wikipedia.org', 'Foo:bar', 'Foo:bar'],
             [ 'en.wikipedia.org', 'Talk: foo', 'Talk:Foo'],
