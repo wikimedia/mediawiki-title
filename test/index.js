@@ -22,7 +22,7 @@ function doTest(formatversion) {
             body: {
                 action: 'query',
                 meta: 'siteinfo',
-                siprop: 'general|namespaces|namespacealiases',
+                siprop: 'general|namespaces|namespacealiases|specialpagealiases',
                 format: 'json',
                 formatversion: formatversion
             }
@@ -241,7 +241,15 @@ function doTest(formatversion) {
             [ 'en.wikipedia.org', 'ﬔ', 'ﬔ' ],
             [ 'en.wikipedia.org', 'ﬕ', 'ﬕ' ],
             [ 'en.wikipedia.org', 'ﬖ', 'ﬖ' ],
-            [ 'en.wikipedia.org', 'ﬗ', 'ﬗ' ]
+            [ 'en.wikipedia.org', 'ﬗ', 'ﬗ' ],
+            // Special page aliases
+            [ 'en.wikipedia.org', 'Special:NotSpecial', 'Special:NotSpecial' ],
+            [ 'en.wikipedia.org', 'Special:Lonelypages', 'Special:LonelyPages' ],
+            [ 'en.wikipedia.org', 'Special:OrphanedPages', 'Special:LonelyPages' ],
+            [ 'en.wikipedia.org', 'Special:Contribs/124.106.240.49', 'Special:Contributions/124.106.240.49' ],
+            [ 'es.wikipedia.org', 'Especial:SpecialPages', 'Especial:PáginasEspeciales' ],
+            [ 'es.wikipedia.org', 'Especial:Expandir plantillas', 'Especial:Sustituir_plantillas' ],
+            [ 'es.wikipedia.org', 'Especial:BookSources/9784041047910', 'Especial:FuentesDeLibros/9784041047910' ],
         ];
 
         testCases.forEach(function (test) {

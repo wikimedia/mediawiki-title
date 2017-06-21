@@ -19,7 +19,7 @@ and applying wiki-specific capitalization rules. The namespace name is converted
 <dt><a href="#SiteInfo">SiteInfo</a> : <code>Object</code></dt>
 <dd><p>Information about a wikimedia site required to make correct
 normalization. This information matches the format used by the
-<a href="https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=general%7Cnamespaces%7Cnamespacealiases">PHP API response</a>,
+<a href="https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=general%7Cnamespaces%7Cnamespacealiases%7Cspecialpagealiases">PHP API response</a>,
 however not all of the fields are required for library operation.</p>
 <p>The list of required properties is documented here, others can be removed.</p>
 </dd>
@@ -177,7 +177,7 @@ Normalize a title according to the rules of <code>siteInfo</code>
 ## SiteInfo : <code>Object</code>
 Information about a wikimedia site required to make correct
 normalization. This information matches the format used by the
-<a href="https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=general%7Cnamespaces%7Cnamespacealiases">PHP API response</a>,
+<a href="https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=general%7Cnamespaces%7Cnamespacealiases%7Cspecialpagealiases">PHP API response</a>,
 however not all of the fields are required for library operation.
 
 The list of required properties is documented here, others can be removed.
@@ -193,12 +193,13 @@ The list of required properties is documented here, others can be removed.
 | general.case | <code>string</code> | Whether to capitalize the first letter of the title. Could be obtained from the `general` section of the `siteInfo` php API response. |
 | namespaces | <code>Object</code> | Site namespaces info in the same format as returned by PHP api. |
 | namespacealiases | <code>Object</code> | Site namespace aliases in the same format as returned by PHP api. |
+| specialpagealiases | <code>Object</code> | Site special page aliases in the same format as returned by PHP api. |
 
 
 ## Usage
 
 The library synchronously returns a normalized title. Wiki-specific rules should be fetched from the 
-[MediaWiki API](https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases), 
+[MediaWiki API](https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=general|namespaces|namespacealiases|specialpagealiases),
 and cached outside of the library. The description of the required properties is available in the [SiteInfo](#SiteInfo)
 object docs.
 
