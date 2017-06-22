@@ -157,6 +157,7 @@ function doTest(formatversion) {
             [ 'en.wikipedia.org', 'Talk: foo', 'Talk:Foo'],
             [ 'en.wikipedia.org', 'int:eger', 'Int:eger'],
             [ 'en.wikipedia.org', 'WP:eger', 'Wikipedia:Eger'],
+            [ 'en.wikipedia.org', 'X-Men (film series) #Gambit', 'X-Men_(film_series)' ],
             // Special handling for `i` first character
             [ 'tr.wikipedia.org', 'iTestTest', 'İTestTest'],
             [ 'az.wikipedia.org', 'iTestTest', 'İTestTest'],
@@ -272,7 +273,7 @@ function doTest(formatversion) {
             .then(function(res) {
                 assert.deepEqual(res.getFragment(), 'some_fragment');
             });
-        })
+        });
     });
 
     describe('Defaults', function() {
