@@ -281,21 +281,26 @@ function doTest(formatversion) {
 
     describe('Defaults', function() {
         var testCases = [
-            [ undefined, 'Example.svg', 'Example.svg'],
-            [ 0, 'Example.svg', 'Example.svg'],
-            [ 6, 'Example.svg', 'File:Example.svg'],
-            [ undefined, 'File:Example.svg', 'File:Example.svg'],
-            [ 6, 'File:Example.svg', 'File:Example.svg'],
-            [ 2, 'File:Example.svg', 'File:Example.svg'],
+            [ undefined, 'Example.svg', 0, 'Example.svg' ],
+            [ 0, 'Example.svg', 0, 'Example.svg' ],
+            [ 6, 'Example.svg', 6, 'File:Example.svg' ],
+            [ undefined, 'File:Example.svg', 6, 'File:Example.svg' ],
+            [ 6, 'File:Example.svg', 6, 'File:Example.svg' ],
+            [ 2, 'File:Example.svg', 6, 'File:Example.svg' ],
+            [ 2, 'Test', 2, 'User:Test' ],
+            [ 2, ':Test', 0, 'Test' ],
+            [ 0, ':User:Test', 2, 'User:Test' ],
         ];
         testCases.forEach(function (test) {
             it('For ns:' + test[0] + ' should default ' + test[1] + ' to ' + test[2], function() {
                 return getSiteInfo('en.wikipedia.org')
                 .then(function(siteInfo) {
-                    return Title.newFromText(test[1], siteInfo, test[0]).getPrefixedDBKey();
+                    var t = Title.newFromText(test[1], siteInfo, test[0]);
+                    return [t.getNamespace()._id, t.getPrefixedDBKey()];
                 })
                 .then(function(res) {
-                    assert.deepEqual(res, test[2]);
+                    assert.deepEqual(res[0], test[2])
+                    assert.deepEqual(res[1], test[3]);
                 });
             });
         });
