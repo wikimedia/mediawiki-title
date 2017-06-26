@@ -192,6 +192,7 @@ function doTest(formatversion) {
             [ 'en.wikipedia.org', 'User_talk:::1/24', 'User_talk:0:0:0:0:0:0:0:1/24'],
             // Case-sensitive namespace
             [ 'en.wikipedia.org', 'user:pchelolo', 'User:Pchelolo'],
+            [ 'en.wiktionary.org', 'user:pchelolo', 'User:Pchelolo' ],
             [ 'en.wikipedia.org',
                 'list of Neighbours characters (2016)#Tom Quill',
                 'List_of_Neighbours_characters_(2016)'],
@@ -249,6 +250,7 @@ function doTest(formatversion) {
             // Special page aliases
             [ 'en.wikipedia.org', 'Special:NotSpecial', 'Special:NotSpecial' ],
             [ 'en.wikipedia.org', 'Special:Lonelypages', 'Special:LonelyPages' ],
+            [ 'en.wikipedia.org', 'Special:lonelypages', 'Special:LonelyPages' ],
             [ 'en.wikipedia.org', 'Special:OrphanedPages', 'Special:LonelyPages' ],
             [ 'en.wikipedia.org', 'Special:Contribs/124.106.240.49', 'Special:Contributions/124.106.240.49' ],
             [ 'es.wikipedia.org', 'Especial:SpecialPages', 'Especial:PáginasEspeciales' ],
