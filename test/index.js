@@ -249,6 +249,7 @@ function doTest(formatversion) {
             // Special page aliases
             [ 'en.wikipedia.org', 'Special:NotSpecial', 'Special:NotSpecial' ],
             [ 'en.wikipedia.org', 'Special:Lonelypages', 'Special:LonelyPages' ],
+            [ 'en.wikipedia.org', 'Special:lonelypages', 'Special:LonelyPages' ],
             [ 'en.wikipedia.org', 'Special:OrphanedPages', 'Special:LonelyPages' ],
             [ 'en.wikipedia.org', 'Special:Contribs/124.106.240.49', 'Special:Contributions/124.106.240.49' ],
             [ 'es.wikipedia.org', 'Especial:SpecialPages', 'Especial:PáginasEspeciales' ],
