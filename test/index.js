@@ -279,6 +279,16 @@ function doTest(formatversion) {
                 assert.deepEqual(res.getFragment(), 'some_fragment');
             });
         });
+
+        it('Should normalize and give readable title', function() {
+            return getSiteInfo('en.wikipedia.org')
+            .then(function(siteInfo) {
+                return Title.newFromText('X-Men_(film_series)', siteInfo);
+            })
+            .then(function(res) {
+                assert.deepEqual(res.getPrefixedText(), 'X-Men (film series)');
+            });
+        });
     });
 
     describe('Defaults', function() {
