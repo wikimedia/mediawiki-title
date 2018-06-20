@@ -5,10 +5,11 @@ var Title = require('../lib/index').Title;
 var utils = require('../lib/utils');
 var preq = require('preq');
 
-// Run jshint as part of normal testing
-require('mocha-jshint')();
-// Run jscs as part of normal testing
-require('mocha-jscs')();
+// Run eslint as part of normal testing
+require('mocha-eslint')([
+    'lib',
+    'test'
+]);
 
 function doTest(formatversion) {
     var siteInfoCache = {};
