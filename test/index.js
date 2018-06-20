@@ -18,13 +18,13 @@ const doTest = (formatversion) => {
         }
 
         siteInfoCache[domain] = preq.post({
-            uri: 'https://' + domain + '/w/api.php',
+            uri: `https://${domain}/w/api.php`,
             body: {
                 action: 'query',
                 meta: 'siteinfo',
                 siprop: 'general|namespaces|namespacealiases|specialpagealiases',
                 format: 'json',
-                formatversion: formatversion
+                formatversion
             }
         })
         .then(res => res.body.query);
@@ -73,7 +73,7 @@ const doTest = (formatversion) => {
             ['A ~~~~~ Timestamp', 'title-invalid-magic-tilde'],
             // Length
             [new Array(258).join('x'), 'title-invalid-too-long'],
-            ['Special:' + new Array(514).join('x'), 'title-invalid-too-long'],
+            [`Special:${new Array(514).join('x')}`, 'title-invalid-too-long'],
             // Namespace prefix without actual title
             ['Talk:', 'title-invalid-empty'],
             ['Talk:#', 'title-invalid-empty'],
@@ -83,15 +83,15 @@ const doTest = (formatversion) => {
         invalidTitles.forEach((testCase) => {
             let name = testCase[0];
             if (name.length > 20) {
-                name = testCase[0].substr(0, 20) + '...'
+                name = `${testCase[0].substr(0, 20)}...`;
             }
 
-            it('should throw ' + testCase[1] + ' error for ' + name, () => {
+            it(`should throw ${testCase[1]} error for ${name}`, () => {
                 return getSiteInfo('en.wikipedia.org')
                 .then(siteInfo => Title.newFromText(testCase[0], siteInfo))
                 .then(() => {
                     throw new Error('Error should be thrown');
-                }, (e) => assert.deepEqual(e.message, testCase[1]));
+                }, e => assert.deepEqual(e.message, testCase[1]));
             });
         });
 
@@ -114,9 +114,9 @@ const doTest = (formatversion) => {
             ['A~~'],
             [':A'],
             // Length is 256 total, but only title part matters
-            ['Category:' + new Array(248).join('x')],
+            [`Category:${new Array(248).join('x')}`],
             // Special pages can have longer titles
-            ['Special:' + new Array(500).join('x')],
+            [`Special:${new Array(500).join('x')}`],
             [new Array(252).join('x')],
             [new Array(257).join('x')],
             ['-'],
@@ -127,12 +127,12 @@ const doTest = (formatversion) => {
         validTitles.forEach((title) => {
             let name = title[0];
             if (name.length > 20) {
-                name = title[0].substr(0, 20) + '...'
+                name = `${title[0].substr(0, 20)}...`;
             }
 
-            it(name + ' should be valid', function() {
+            it(`${name} should be valid`, () => {
                 return getSiteInfo('en.wikipedia.org')
-                .then(siteInfo => Title.newFromText(title[0], siteInfo))
+                .then(siteInfo => Title.newFromText(title[0], siteInfo));
             });
         });
     });
@@ -151,6 +151,7 @@ const doTest = (formatversion) => {
             ['en.wikipedia.org', 'WP:eger', 'Wikipedia:Eger'],
             ['en.wikipedia.org', 'X-Men (film series) #Gambit', 'X-Men_(film_series)'],
             ['en.wikipedia.org', 'Foo _ bar', 'Foo_bar'],
+            // eslint-disable-next-line max-len
             ['en.wikipedia.org', 'Foo \u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000 bar', 'Foo_bar'],
             ['en.wikipedia.org', 'Foo\u200E\u200F\u202A\u202B\u202C\u202D\u202Ebar', 'Foobar'],
             // Special handling for `i` first character
@@ -245,14 +246,16 @@ const doTest = (formatversion) => {
             ['en.wikipedia.org', 'Special:Lonelypages', 'Special:LonelyPages'],
             ['en.wikipedia.org', 'Special:lonelypages', 'Special:LonelyPages'],
             ['en.wikipedia.org', 'Special:OrphanedPages', 'Special:LonelyPages'],
+            // eslint-disable-next-line max-len
             ['en.wikipedia.org', 'Special:Contribs/124.106.240.49', 'Special:Contributions/124.106.240.49'],
             ['es.wikipedia.org', 'Especial:SpecialPages', 'Especial:PáginasEspeciales'],
             ['es.wikipedia.org', 'Especial:Expandir plantillas', 'Especial:Sustituir_plantillas'],
+            // eslint-disable-next-line max-len
             ['es.wikipedia.org', 'Especial:BookSources/9784041047910', 'Especial:FuentesDeLibros/9784041047910'],
         ];
 
         testCases.forEach((test) => {
-            it('For ' + test[0] + ' should normalize ' + test[1] + ' to ' + test[2], () => {
+            it(`For ${test[0]} should normalize ${test[1]} to ${test[2]}`, () => {
                 return getSiteInfo(test[0])
                 .then(siteInfo => Title.newFromText(test[1], siteInfo).getPrefixedDBKey())
                 .then(res => assert.deepEqual(res, test[2]));
@@ -285,14 +288,14 @@ const doTest = (formatversion) => {
             [0, ':User:Test', 2, 'User:Test'],
         ];
         testCases.forEach((test) => {
-            it('For ns:' + test[0] + ' should default ' + test[1] + ' to ' + test[2], () => {
+            it(`For ns:${test[0]} should default ${test[1]} to ${test[2]}`, () => {
                 return getSiteInfo('en.wikipedia.org')
                 .then((siteInfo) => {
                     const t = Title.newFromText(test[1], siteInfo, test[0]);
                     return [t.getNamespace()._id, t.getPrefixedDBKey()];
                 })
                 .then((res) => {
-                    assert.deepEqual(res[0], test[2])
+                    assert.deepEqual(res[0], test[2]);
                     assert.deepEqual(res[1], test[3]);
                 });
             });
@@ -362,12 +365,12 @@ const doTest = (formatversion) => {
         let idx = 0;
         data.forEach((test) => {
             idx++;
-            it('Should covert byte range. Test ' + idx,  () => {
+            it(`Should covert byte range. Test ${idx}`,  () => {
                 assert.deepEqual(utils.convertByteClassToUnicodeClass(test[0]), test[1]);
             });
         });
 
-       /* it('Should fetch domains', () => {
+        /* it('Should fetch domains', () => {
             return preq.get({
                 uri: 'https://en.wikipedia.org/w/api.php?action=sitematrix&format=json'
             })
