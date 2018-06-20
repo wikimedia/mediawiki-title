@@ -1,18 +1,18 @@
 'use strict';
 
-var assert = require('assert');
-var Title = require('../lib/index').Title;
-var utils = require('../lib/utils');
-var preq = require('preq');
+const assert = require('assert');
+const Title = require('../lib/index').Title;
+const utils = require('../lib/utils');
+const preq = require('preq');
 
+// Run eslint as part of normal testing
+require('mocha-eslint')([ 'lib' ]);
 // Run jshint as part of normal testing
 require('mocha-jshint')();
-// Run jscs as part of normal testing
-require('mocha-jscs')();
 
-function doTest(formatversion) {
-    var siteInfoCache = {};
-    var getSiteInfo = function(domain) {
+const doTest = (formatversion) => {
+    const siteInfoCache = {};
+    const getSiteInfo = (domain) => {
         if (siteInfoCache[domain]) {
             return siteInfoCache[domain];
         }
@@ -27,14 +27,12 @@ function doTest(formatversion) {
                 formatversion: formatversion
             }
         })
-        .then(function(res) {
-            return res.body.query;
-        });
+        .then(res => res.body.query);
         return siteInfoCache[domain];
     };
 
-    describe('Validation', function () {
-        var invalidTitles = [
+    describe('Validation', () => {
+        const invalidTitles = [
             ['foo�', 'title-invalid-utf8'],
             ['', 'title-invalid-empty'],
             [':', 'title-invalid-empty'],
@@ -74,244 +72,226 @@ function doTest(formatversion) {
             ['A ~~~~ Signature', 'title-invalid-magic-tilde'],
             ['A ~~~~~ Timestamp', 'title-invalid-magic-tilde'],
             // Length
-            [ new Array(258).join('x'), 'title-invalid-too-long' ],
-            [ 'Special:' + new Array(514).join('x'), 'title-invalid-too-long' ],
+            [new Array(258).join('x'), 'title-invalid-too-long'],
+            ['Special:' + new Array(514).join('x'), 'title-invalid-too-long'],
             // Namespace prefix without actual title
             ['Talk:', 'title-invalid-empty'],
             ['Talk:#', 'title-invalid-empty'],
             ['Category: ', 'title-invalid-empty'],
             ['Category: #bar', 'title-invalid-empty']];
 
-        invalidTitles.forEach(function(testCase) {
-            var name = testCase[0];
+        invalidTitles.forEach((testCase) => {
+            let name = testCase[0];
             if (name.length > 20) {
                 name = testCase[0].substr(0, 20) + '...'
             }
 
-            it('should throw ' + testCase[1] + ' error for ' + name, function() {
+            it('should throw ' + testCase[1] + ' error for ' + name, () => {
                 return getSiteInfo('en.wikipedia.org')
-                .then(function(siteInfo) {
-                    return Title.newFromText(testCase[0], siteInfo);
-                })
-                .then(function () {
+                .then(siteInfo => Title.newFromText(testCase[0], siteInfo))
+                .then(() => {
                     throw new Error('Error should be thrown');
-                }, function (e) {
-                    assert.deepEqual(e.message, testCase[1]);
-                });
+                }, (e) => assert.deepEqual(e.message, testCase[1]));
             });
         });
 
-        var validTitles = [
-            [ 'Sandbox' ],
-            [ 'A "B"' ],
-            [ 'A \'B\'' ],
-            [ '.com' ],
-            [ '~' ],
-            [ '#' ],
-            [ 'Test#Abc' ],
-            [ '"' ],
-            [ '\'' ],
-            [ 'Talk:Sandbox' ],
-            [ 'Talk:Foo:Sandbox' ],
-            [ 'File:Example.svg' ],
-            [ 'File_talk:Example.svg' ],
-            [ 'Foo/.../Sandbox' ],
-            [ 'Sandbox/...' ],
-            [ 'A~~' ],
-            [ ':A' ],
+        const validTitles = [
+            ['Sandbox'],
+            ['A "B"'],
+            ['A \'B\''],
+            ['.com'],
+            ['~'],
+            ['#'],
+            ['Test#Abc'],
+            ['"'],
+            ['\''],
+            ['Talk:Sandbox'],
+            ['Talk:Foo:Sandbox'],
+            ['File:Example.svg'],
+            ['File_talk:Example.svg'],
+            ['Foo/.../Sandbox'],
+            ['Sandbox/...'],
+            ['A~~'],
+            [':A'],
             // Length is 256 total, but only title part matters
-            [ 'Category:' + new Array(248).join('x') ],
+            ['Category:' + new Array(248).join('x')],
             // Special pages can have longer titles
-            [ 'Special:' + new Array(500).join('x') ],
-            [ new Array(252).join('x') ],
-            [ new Array(257).join('x') ],
-            [ '-' ],
-            [ 'aũ' ],
-            [ '"Believing_Women"_in_Islam._Unreading_Patriarchal_Interpretations_of_the_Qur\\\'ān']
+            ['Special:' + new Array(500).join('x')],
+            [new Array(252).join('x')],
+            [new Array(257).join('x')],
+            ['-'],
+            ['aũ'],
+            ['"Believing_Women"_in_Islam._Unreading_Patriarchal_Interpretations_of_the_Qur\\\'ān']
         ];
 
-        validTitles.forEach(function(title) {
-            var name = title[0];
+        validTitles.forEach((title) => {
+            let name = title[0];
             if (name.length > 20) {
                 name = title[0].substr(0, 20) + '...'
             }
 
             it(name + ' should be valid', function() {
                 return getSiteInfo('en.wikipedia.org')
-                .then(function(siteInfo) {
-                    return Title.newFromText(title[0], siteInfo);
-                })
+                .then(siteInfo => Title.newFromText(title[0], siteInfo))
             });
         });
     });
 
-    describe('Normalization', function() {
-        var testCases = [
-            [ 'en.wikipedia.org', 'Test', 'Test'],
-            [ 'en.wikipedia.org', ':Test', 'Test'],
-            [ 'en.wikipedia.org', ': Test', 'Test'],
-            [ 'en.wikipedia.org', ':_Test_', 'Test'],
-            [ 'en.wikipedia.org', 'Test 123  456   789', 'Test_123_456_789' ],
-            [ 'en.wikipedia.org', '💩', '💩'],
-            [ 'en.wikipedia.org', 'Foo:bar', 'Foo:bar'],
-            [ 'en.wikipedia.org', 'Talk: foo', 'Talk:Foo'],
-            [ 'en.wikipedia.org', 'int:eger', 'Int:eger'],
-            [ 'en.wikipedia.org', 'WP:eger', 'Wikipedia:Eger'],
-            [ 'en.wikipedia.org', 'X-Men (film series) #Gambit', 'X-Men_(film_series)' ],
-            [ 'en.wikipedia.org', 'Foo _ bar', 'Foo_bar' ],
-            [ 'en.wikipedia.org', 'Foo \u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000 bar', 'Foo_bar' ],
-            [ 'en.wikipedia.org', 'Foo\u200E\u200F\u202A\u202B\u202C\u202D\u202Ebar', 'Foobar' ],
+    describe('Normalization', () => {
+        const testCases = [
+            ['en.wikipedia.org', 'Test', 'Test'],
+            ['en.wikipedia.org', ':Test', 'Test'],
+            ['en.wikipedia.org', ': Test', 'Test'],
+            ['en.wikipedia.org', ':_Test_', 'Test'],
+            ['en.wikipedia.org', 'Test 123  456   789', 'Test_123_456_789'],
+            ['en.wikipedia.org', '💩', '💩'],
+            ['en.wikipedia.org', 'Foo:bar', 'Foo:bar'],
+            ['en.wikipedia.org', 'Talk: foo', 'Talk:Foo'],
+            ['en.wikipedia.org', 'int:eger', 'Int:eger'],
+            ['en.wikipedia.org', 'WP:eger', 'Wikipedia:Eger'],
+            ['en.wikipedia.org', 'X-Men (film series) #Gambit', 'X-Men_(film_series)'],
+            ['en.wikipedia.org', 'Foo _ bar', 'Foo_bar'],
+            ['en.wikipedia.org', 'Foo \u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000 bar', 'Foo_bar'],
+            ['en.wikipedia.org', 'Foo\u200E\u200F\u202A\u202B\u202C\u202D\u202Ebar', 'Foobar'],
             // Special handling for `i` first character
-            [ 'tr.wikipedia.org', 'iTestTest', 'İTestTest'],
-            [ 'az.wikipedia.org', 'iTestTest', 'İTestTest'],
-            [ 'kk.wikipedia.org', 'iTestTest', 'İTestTest'],
-            [ 'kaa.wikipedia.org', 'iTestTest', 'İTestTest'],
+            ['tr.wikipedia.org', 'iTestTest', 'İTestTest'],
+            ['az.wikipedia.org', 'iTestTest', 'İTestTest'],
+            ['kk.wikipedia.org', 'iTestTest', 'İTestTest'],
+            ['kaa.wikipedia.org', 'iTestTest', 'İTestTest'],
             // User IP sanitizations
-            [ 'en.wikipedia.org', 'User:::1', 'User:0:0:0:0:0:0:0:1'],
-            [ 'en.wikipedia.org', 'User:0:0:0:0:0:0:0:1', 'User:0:0:0:0:0:0:0:1'],
-            [ 'en.wikipedia.org', 'User:127.000.000.001', 'User:127.0.0.1'],
-            [ 'en.wikipedia.org', 'User:0.0.0.0', 'User:0.0.0.0' ],
-            [ 'en.wikipedia.org', 'User:00.00.00.00', 'User:0.0.0.0' ],
-            [ 'en.wikipedia.org', 'User:000.000.000.000', 'User:0.0.0.0'],
-            [ 'en.wikipedia.org', 'User:141.000.011.253', 'User:141.0.11.253' ],
-            [ 'en.wikipedia.org', 'User: 1.2.4.5', 'User:1.2.4.5' ],
-            [ 'en.wikipedia.org', 'User:01.02.04.05', 'User:1.2.4.5' ],
-            [ 'en.wikipedia.org', 'User:001.002.004.005', 'User:1.2.4.5' ],
-            [ 'en.wikipedia.org', 'User:010.0.000.1', 'User:10.0.0.1' ],
-            [ 'en.wikipedia.org', 'User:080.072.250.04', 'User:80.72.250.4' ],
-            [ 'en.wikipedia.org', 'User:Foo.1000.00', 'User:Foo.1000.00' ],
-            [ 'en.wikipedia.org', 'User:Bar.01', 'User:Bar.01' ],
-            [ 'en.wikipedia.org', 'User:Bar.010', 'User:Bar.010' ],
-            [ 'en.wikipedia.org', 'User:cebc:2004:f::', 'User:CEBC:2004:F:0:0:0:0:0' ],
-            [ 'en.wikipedia.org', 'User:::', 'User:0:0:0:0:0:0:0:0' ],
-            [ 'en.wikipedia.org', 'User:0:0:0:1::', 'User:0:0:0:1:0:0:0:0' ],
-            [ 'en.wikipedia.org', 'User:3f:535::e:fbb', 'User:3F:535:0:0:0:0:E:FBB' ],
-            [ 'en.wikipedia.org', 'User Talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
-            [ 'en.wikipedia.org', 'User_Talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
-            [ 'en.wikipedia.org', 'User_talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
-            [ 'en.wikipedia.org', 'User_talk:::1/24', 'User_talk:0:0:0:0:0:0:0:1/24'],
+            ['en.wikipedia.org', 'User:::1', 'User:0:0:0:0:0:0:0:1'],
+            ['en.wikipedia.org', 'User:0:0:0:0:0:0:0:1', 'User:0:0:0:0:0:0:0:1'],
+            ['en.wikipedia.org', 'User:127.000.000.001', 'User:127.0.0.1'],
+            ['en.wikipedia.org', 'User:0.0.0.0', 'User:0.0.0.0'],
+            ['en.wikipedia.org', 'User:00.00.00.00', 'User:0.0.0.0'],
+            ['en.wikipedia.org', 'User:000.000.000.000', 'User:0.0.0.0'],
+            ['en.wikipedia.org', 'User:141.000.011.253', 'User:141.0.11.253'],
+            ['en.wikipedia.org', 'User: 1.2.4.5', 'User:1.2.4.5'],
+            ['en.wikipedia.org', 'User:01.02.04.05', 'User:1.2.4.5'],
+            ['en.wikipedia.org', 'User:001.002.004.005', 'User:1.2.4.5'],
+            ['en.wikipedia.org', 'User:010.0.000.1', 'User:10.0.0.1'],
+            ['en.wikipedia.org', 'User:080.072.250.04', 'User:80.72.250.4'],
+            ['en.wikipedia.org', 'User:Foo.1000.00', 'User:Foo.1000.00'],
+            ['en.wikipedia.org', 'User:Bar.01', 'User:Bar.01'],
+            ['en.wikipedia.org', 'User:Bar.010', 'User:Bar.010'],
+            ['en.wikipedia.org', 'User:cebc:2004:f::', 'User:CEBC:2004:F:0:0:0:0:0'],
+            ['en.wikipedia.org', 'User:::', 'User:0:0:0:0:0:0:0:0'],
+            ['en.wikipedia.org', 'User:0:0:0:1::', 'User:0:0:0:1:0:0:0:0'],
+            ['en.wikipedia.org', 'User:3f:535::e:fbb', 'User:3F:535:0:0:0:0:E:FBB'],
+            ['en.wikipedia.org', 'User Talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
+            ['en.wikipedia.org', 'User_Talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
+            ['en.wikipedia.org', 'User_talk:::1', 'User_talk:0:0:0:0:0:0:0:1'],
+            ['en.wikipedia.org', 'User_talk:::1/24', 'User_talk:0:0:0:0:0:0:0:1/24'],
             // Case-sensitive namespace
-            [ 'en.wikipedia.org', 'user:pchelolo', 'User:Pchelolo'],
-            [ 'en.wiktionary.org', 'user:pchelolo', 'User:Pchelolo' ],
-            [ 'en.wikipedia.org',
+            ['en.wikipedia.org', 'user:pchelolo', 'User:Pchelolo'],
+            ['en.wiktionary.org', 'user:pchelolo', 'User:Pchelolo'],
+            ['en.wikipedia.org',
                 'list of Neighbours characters (2016)#Tom Quill',
                 'List_of_Neighbours_characters_(2016)'],
-            [ 'en.wikipedia.org', 'ß', 'ß' ],
-            [ 'en.wikipedia.org', 'ŉ', 'ŉ' ],
-            [ 'en.wikipedia.org', 'ǰ', 'ǰ' ],
-            [ 'en.wikipedia.org', 'ΐ', 'ΐ' ],
-            [ 'en.wikipedia.org', 'ΰ', 'ΰ' ],
-            [ 'en.wikipedia.org', 'և', 'և' ],
-            [ 'en.wikipedia.org', 'ẖ', 'ẖ' ],
-            [ 'en.wikipedia.org', 'ẗ', 'ẗ' ],
-            [ 'en.wikipedia.org', 'ẘ', 'ẘ' ],
-            [ 'en.wikipedia.org', 'ẙ', 'ẙ' ],
-            [ 'en.wikipedia.org', 'ẚ', 'ẚ' ],
-            [ 'en.wikipedia.org', 'ὐ', 'ὐ' ],
-            [ 'en.wikipedia.org', 'ὒ', 'ὒ' ],
-            [ 'en.wikipedia.org', 'ὔ', 'ὔ' ],
-            [ 'en.wikipedia.org', 'ὖ', 'ὖ' ],
-            [ 'en.wikipedia.org', 'ᾀ', 'ᾈ' ],
-            [ 'en.wikipedia.org', 'ᾁ', 'ᾉ' ],
-            [ 'en.wikipedia.org', 'ᾂ', 'ᾊ' ],
-            [ 'en.wikipedia.org', 'ᾃ', 'ᾋ' ],
-            [ 'en.wikipedia.org', 'ᾄ', 'ᾌ' ],
-            [ 'en.wikipedia.org', 'ᾅ', 'ᾍ' ],
-            [ 'en.wikipedia.org', 'ᾆ', 'ᾎ' ],
-            [ 'en.wikipedia.org', 'ᾇ', 'ᾏ' ],
-            [ 'en.wikipedia.org', 'ᾐ', 'ᾘ' ],
-            [ 'en.wikipedia.org', 'ᾑ', 'ᾙ' ],
-            [ 'en.wikipedia.org', 'ᾒ', 'ᾚ' ],
-            [ 'en.wikipedia.org', 'ᾓ', 'ᾛ' ],
-            [ 'en.wikipedia.org', 'ᾔ', 'ᾜ' ],
-            [ 'en.wikipedia.org', 'ᾕ', 'ᾝ' ],
-            [ 'en.wikipedia.org', 'ᾖ', 'ᾞ' ],
-            [ 'en.wikipedia.org', 'ᾗ', 'ᾟ' ],
-            [ 'en.wikipedia.org', 'ᾠ', 'ᾨ' ],
-            [ 'en.wikipedia.org', 'ᾡ', 'ᾩ' ],
-            [ 'en.wikipedia.org', 'ᾢ', 'ᾪ' ],
-            [ 'en.wikipedia.org', 'ᾣ', 'ᾫ' ],
-            [ 'en.wikipedia.org', 'ᾤ', 'ᾬ' ],
-            [ 'en.wikipedia.org', 'ᾥ', 'ᾭ' ],
-            [ 'en.wikipedia.org', 'ᾦ', 'ᾮ' ],
-            [ 'en.wikipedia.org', 'ᾧ', 'ᾯ' ],
-            [ 'en.wikipedia.org', 'ﬀ', 'ﬀ' ],
-            [ 'en.wikipedia.org', 'ﬁ', 'ﬁ' ],
-            [ 'en.wikipedia.org', 'ﬂ', 'ﬂ' ],
-            [ 'en.wikipedia.org', 'ﬃ', 'ﬃ' ],
-            [ 'en.wikipedia.org', 'ﬄ', 'ﬄ' ],
-            [ 'en.wikipedia.org', 'ﬅ', 'ﬅ' ],
-            [ 'en.wikipedia.org', 'ﬆ', 'ﬆ' ],
-            [ 'en.wikipedia.org', 'ﬓ', 'ﬓ' ],
-            [ 'en.wikipedia.org', 'ﬔ', 'ﬔ' ],
-            [ 'en.wikipedia.org', 'ﬕ', 'ﬕ' ],
-            [ 'en.wikipedia.org', 'ﬖ', 'ﬖ' ],
-            [ 'en.wikipedia.org', 'ﬗ', 'ﬗ' ],
-            [ 'en.wikipedia.org', 'ⓝ', 'ⓝ' ],
+            ['en.wikipedia.org', 'ß', 'ß'],
+            ['en.wikipedia.org', 'ŉ', 'ŉ'],
+            ['en.wikipedia.org', 'ǰ', 'ǰ'],
+            ['en.wikipedia.org', 'ΐ', 'ΐ'],
+            ['en.wikipedia.org', 'ΰ', 'ΰ'],
+            ['en.wikipedia.org', 'և', 'և'],
+            ['en.wikipedia.org', 'ẖ', 'ẖ'],
+            ['en.wikipedia.org', 'ẗ', 'ẗ'],
+            ['en.wikipedia.org', 'ẘ', 'ẘ'],
+            ['en.wikipedia.org', 'ẙ', 'ẙ'],
+            ['en.wikipedia.org', 'ẚ', 'ẚ'],
+            ['en.wikipedia.org', 'ὐ', 'ὐ'],
+            ['en.wikipedia.org', 'ὒ', 'ὒ'],
+            ['en.wikipedia.org', 'ὔ', 'ὔ'],
+            ['en.wikipedia.org', 'ὖ', 'ὖ'],
+            ['en.wikipedia.org', 'ᾀ', 'ᾈ'],
+            ['en.wikipedia.org', 'ᾁ', 'ᾉ'],
+            ['en.wikipedia.org', 'ᾂ', 'ᾊ'],
+            ['en.wikipedia.org', 'ᾃ', 'ᾋ'],
+            ['en.wikipedia.org', 'ᾄ', 'ᾌ'],
+            ['en.wikipedia.org', 'ᾅ', 'ᾍ'],
+            ['en.wikipedia.org', 'ᾆ', 'ᾎ'],
+            ['en.wikipedia.org', 'ᾇ', 'ᾏ'],
+            ['en.wikipedia.org', 'ᾐ', 'ᾘ'],
+            ['en.wikipedia.org', 'ᾑ', 'ᾙ'],
+            ['en.wikipedia.org', 'ᾒ', 'ᾚ'],
+            ['en.wikipedia.org', 'ᾓ', 'ᾛ'],
+            ['en.wikipedia.org', 'ᾔ', 'ᾜ'],
+            ['en.wikipedia.org', 'ᾕ', 'ᾝ'],
+            ['en.wikipedia.org', 'ᾖ', 'ᾞ'],
+            ['en.wikipedia.org', 'ᾗ', 'ᾟ'],
+            ['en.wikipedia.org', 'ᾠ', 'ᾨ'],
+            ['en.wikipedia.org', 'ᾡ', 'ᾩ'],
+            ['en.wikipedia.org', 'ᾢ', 'ᾪ'],
+            ['en.wikipedia.org', 'ᾣ', 'ᾫ'],
+            ['en.wikipedia.org', 'ᾤ', 'ᾬ'],
+            ['en.wikipedia.org', 'ᾥ', 'ᾭ'],
+            ['en.wikipedia.org', 'ᾦ', 'ᾮ'],
+            ['en.wikipedia.org', 'ᾧ', 'ᾯ'],
+            ['en.wikipedia.org', 'ﬀ', 'ﬀ'],
+            ['en.wikipedia.org', 'ﬁ', 'ﬁ'],
+            ['en.wikipedia.org', 'ﬂ', 'ﬂ'],
+            ['en.wikipedia.org', 'ﬃ', 'ﬃ'],
+            ['en.wikipedia.org', 'ﬄ', 'ﬄ'],
+            ['en.wikipedia.org', 'ﬅ', 'ﬅ'],
+            ['en.wikipedia.org', 'ﬆ', 'ﬆ'],
+            ['en.wikipedia.org', 'ﬓ', 'ﬓ'],
+            ['en.wikipedia.org', 'ﬔ', 'ﬔ'],
+            ['en.wikipedia.org', 'ﬕ', 'ﬕ'],
+            ['en.wikipedia.org', 'ﬖ', 'ﬖ'],
+            ['en.wikipedia.org', 'ﬗ', 'ﬗ'],
+            ['en.wikipedia.org', 'ⓝ', 'ⓝ'],
             // Special page aliases
-            [ 'en.wikipedia.org', 'Special:NotSpecial', 'Special:NotSpecial' ],
-            [ 'en.wikipedia.org', 'Special:Lonelypages', 'Special:LonelyPages' ],
-            [ 'en.wikipedia.org', 'Special:lonelypages', 'Special:LonelyPages' ],
-            [ 'en.wikipedia.org', 'Special:OrphanedPages', 'Special:LonelyPages' ],
-            [ 'en.wikipedia.org', 'Special:Contribs/124.106.240.49', 'Special:Contributions/124.106.240.49' ],
-            [ 'es.wikipedia.org', 'Especial:SpecialPages', 'Especial:PáginasEspeciales' ],
-            [ 'es.wikipedia.org', 'Especial:Expandir plantillas', 'Especial:Sustituir_plantillas' ],
-            [ 'es.wikipedia.org', 'Especial:BookSources/9784041047910', 'Especial:FuentesDeLibros/9784041047910' ],
+            ['en.wikipedia.org', 'Special:NotSpecial', 'Special:NotSpecial'],
+            ['en.wikipedia.org', 'Special:Lonelypages', 'Special:LonelyPages'],
+            ['en.wikipedia.org', 'Special:lonelypages', 'Special:LonelyPages'],
+            ['en.wikipedia.org', 'Special:OrphanedPages', 'Special:LonelyPages'],
+            ['en.wikipedia.org', 'Special:Contribs/124.106.240.49', 'Special:Contributions/124.106.240.49'],
+            ['es.wikipedia.org', 'Especial:SpecialPages', 'Especial:PáginasEspeciales'],
+            ['es.wikipedia.org', 'Especial:Expandir plantillas', 'Especial:Sustituir_plantillas'],
+            ['es.wikipedia.org', 'Especial:BookSources/9784041047910', 'Especial:FuentesDeLibros/9784041047910'],
         ];
 
-        testCases.forEach(function (test) {
-            it('For ' + test[0] + ' should normalize ' + test[1] + ' to ' + test[2], function() {
+        testCases.forEach((test) => {
+            it('For ' + test[0] + ' should normalize ' + test[1] + ' to ' + test[2], () => {
                 return getSiteInfo(test[0])
-                .then(function(siteInfo) {
-                    return Title.newFromText(test[1], siteInfo).getPrefixedDBKey();
-                })
-                .then(function(res) {
-                    assert.deepEqual(res, test[2]);
-                });
+                .then(siteInfo => Title.newFromText(test[1], siteInfo).getPrefixedDBKey())
+                .then(res => assert.deepEqual(res, test[2]));
             });
         });
 
-        it('Should normalize fragment', function() {
+        it('Should normalize fragment', () => {
             return getSiteInfo('en.wikipedia.org')
-            .then(function(siteInfo) {
-                return Title.newFromText('Test#some fragment', siteInfo);
-            })
-            .then(function(res) {
-                assert.deepEqual(res.getFragment(), 'some_fragment');
-            });
+            .then(siteInfo => Title.newFromText('Test#some fragment', siteInfo))
+            .then(res => assert.deepEqual(res.getFragment(), 'some_fragment'));
         });
 
-        it('Should normalize and give readable title', function() {
+        it('Should normalize and give readable title', () => {
             return getSiteInfo('en.wikipedia.org')
-            .then(function(siteInfo) {
-                return Title.newFromText('X-Men_(film_series)', siteInfo);
-            })
-            .then(function(res) {
-                assert.deepEqual(res.getPrefixedText(), 'X-Men (film series)');
-            });
+            .then(siteInfo => Title.newFromText('X-Men_(film_series)', siteInfo))
+            .then(res => assert.deepEqual(res.getPrefixedText(), 'X-Men (film series)'));
         });
     });
 
-    describe('Defaults', function() {
-        var testCases = [
-            [ undefined, 'Example.svg', 0, 'Example.svg' ],
-            [ 0, 'Example.svg', 0, 'Example.svg' ],
-            [ 6, 'Example.svg', 6, 'File:Example.svg' ],
-            [ undefined, 'File:Example.svg', 6, 'File:Example.svg' ],
-            [ 6, 'File:Example.svg', 6, 'File:Example.svg' ],
-            [ 2, 'File:Example.svg', 6, 'File:Example.svg' ],
-            [ 2, 'Test', 2, 'User:Test' ],
-            [ 2, ':Test', 0, 'Test' ],
-            [ 0, ':User:Test', 2, 'User:Test' ],
+    describe('Defaults', () => {
+        const testCases = [
+            [undefined, 'Example.svg', 0, 'Example.svg'],
+            [0, 'Example.svg', 0, 'Example.svg'],
+            [6, 'Example.svg', 6, 'File:Example.svg'],
+            [undefined, 'File:Example.svg', 6, 'File:Example.svg'],
+            [6, 'File:Example.svg', 6, 'File:Example.svg'],
+            [2, 'File:Example.svg', 6, 'File:Example.svg'],
+            [2, 'Test', 2, 'User:Test'],
+            [2, ':Test', 0, 'Test'],
+            [0, ':User:Test', 2, 'User:Test'],
         ];
-        testCases.forEach(function (test) {
-            it('For ns:' + test[0] + ' should default ' + test[1] + ' to ' + test[2], function() {
+        testCases.forEach((test) => {
+            it('For ns:' + test[0] + ' should default ' + test[1] + ' to ' + test[2], () => {
                 return getSiteInfo('en.wikipedia.org')
-                .then(function(siteInfo) {
-                    var t = Title.newFromText(test[1], siteInfo, test[0]);
+                .then((siteInfo) => {
+                    const t = Title.newFromText(test[1], siteInfo, test[0]);
                     return [t.getNamespace()._id, t.getPrefixedDBKey()];
                 })
-                .then(function(res) {
+                .then((res) => {
                     assert.deepEqual(res[0], test[2])
                     assert.deepEqual(res[1], test[3]);
                 });
@@ -319,8 +299,8 @@ function doTest(formatversion) {
         });
     });
 
-    describe('Utilities', function () {
-        var data = [
+    describe('Utilities', () => {
+        const data = [
             [
                 ' %!"$&\'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+',
                 ' %!"$&\'()*,\\-./0-9:;=?@A-Z\\\\\\^_`a-z~+\\u0080-\\uFFFF',
@@ -379,48 +359,39 @@ function doTest(formatversion) {
             ]
         ];
 
-        var idx = 0;
-        data.forEach(function(test) {
+        let idx = 0;
+        data.forEach((test) => {
             idx++;
-            it('Should covert byte range. Test ' + idx, function () {
+            it('Should covert byte range. Test ' + idx,  () => {
                 assert.deepEqual(utils.convertByteClassToUnicodeClass(test[0]), test[1]);
             });
         });
 
-        it('Should fetch domains', function() {
+       /* it('Should fetch domains', () => {
             return preq.get({
                 uri: 'https://en.wikipedia.org/w/api.php?action=sitematrix&format=json'
             })
-            .then(function(res) {
+            .then((res) => {
                 return Object.keys(res.body.sitematrix)
-                .filter(function(idx) {
-                    return idx !== 'count' && idx !== 'specials';
-                })
-                .filter(function(idx) {
-                    return res.body.sitematrix[idx].site[0];
-                })
-                .map(function (idx) {
-                    return res.body.sitematrix[idx].site[0].url.replace(/^https?:\/\//, '');
-                });
+                .filter((idx) => idx !== 'count'
+                        && idx !== 'specials'
+                        && res.body.sitematrix[idx].site.length)
+                .map(idx => res.body.sitematrix[idx].site[0].url.replace(/^https?:\/\//, ''));
             })
-            .then(function (domains) {
-                describe('Various domains', function() {
-                    domains.forEach(function (domain) {
-                        it('Should work for ' + domain, function() {
+            .then((domains) => {
+                describe('Various domains', () => {
+                    domains.forEach((domain) => {
+                        it('Should work for ' + domain, () => {
                             return getSiteInfo(domain)
-                            .then(function(siteInfo) {
-                                return Title.newFromText('1', siteInfo);
-                            })
-                            .then(function (res) {
-                                assert.deepEqual(res.getPrefixedDBKey(), '1');
-                            });
+                            .then(siteInfo => Title.newFromText('1', siteInfo))
+                            .then(res => assert.deepEqual(res.getPrefixedDBKey(), '1'));
                         });
                     });
                 });
             });
-        });
+        });*/
     });
-}
+};
 
 doTest(1);
 doTest(2);
