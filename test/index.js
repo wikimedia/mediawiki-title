@@ -396,6 +396,9 @@ function doTest(formatversion) {
                 .filter(function(idx) {
                     return idx !== 'count' && idx !== 'specials';
                 })
+                .filter(function(idx) {
+                    return res.body.sitematrix[idx].site[0];
+                })
                 .map(function (idx) {
                     return res.body.sitematrix[idx].site[0].url.replace(/^https?:\/\//, '');
                 });
