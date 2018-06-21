@@ -368,21 +368,23 @@ const doTest = (formatversion) => {
             });
         });
 
-        /* it('Should fetch domains', () => {
+        it('Should fetch domains', () => {
             return preq.get({
                 uri: 'https://en.wikipedia.org/w/api.php?action=sitematrix&format=json'
             })
             .then((res) => {
                 return Object.keys(res.body.sitematrix)
-                .filter((idx) => idx !== 'count'
+                .filter((idx) => {
+                    return idx !== 'count'
                         && idx !== 'specials'
-                        && res.body.sitematrix[idx].site.length)
+                        && res.body.sitematrix[idx].site.length;
+                })
                 .map(idx => res.body.sitematrix[idx].site[0].url.replace(/^https?:\/\//, ''));
             })
             .then((domains) => {
                 describe('Various domains', () => {
                     domains.forEach((domain) => {
-                        it('Should work for ' + domain, () => {
+                        it(`Should work for ${domain}`, () => {
                             return getSiteInfo(domain)
                             .then(siteInfo => Title.newFromText('1', siteInfo))
                             .then(res => assert.deepEqual(res.getPrefixedDBKey(), '1'));
@@ -390,7 +392,7 @@ const doTest = (formatversion) => {
                     });
                 });
             });
-        });*/
+        });
     });
 };
 
