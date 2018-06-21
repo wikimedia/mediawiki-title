@@ -6,9 +6,7 @@ const utils = require('../lib/utils');
 const preq = require('preq');
 
 // Run eslint as part of normal testing
-require('mocha-eslint')([ 'lib' ]);
-// Run jshint as part of normal testing
-require('mocha-jshint')();
+require('mocha-eslint')([ 'lib', 'test' ]);
 
 const doTest = (formatversion) => {
     const siteInfoCache = {};
