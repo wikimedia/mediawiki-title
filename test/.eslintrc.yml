@@ -1,0 +1,5 @@
+extends: '../.eslintrc.yml'
+globals: {
+    'describe': false,
+    'it': false
+}
