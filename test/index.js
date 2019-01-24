@@ -5,9 +5,6 @@ const Title = require('../lib/index').Title;
 const utils = require('../lib/utils');
 const preq = require('preq');
 
-// Run eslint as part of normal testing
-require('mocha-eslint')([ 'lib', 'test' ]);
-
 const doTest = (formatversion) => {
     const siteInfoCache = {};
     const getSiteInfo = (domain) => {
