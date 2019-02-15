@@ -13,4 +13,4 @@ notifications:
     on_success: change
     on_failure: always
 
-script: npm run-script coverage && (npm run-script coveralls || exit 0)
+script: npm run-script lint && npm run-script coverage && (npm run-script coveralls || exit 0)
