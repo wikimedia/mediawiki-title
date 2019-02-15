@@ -9,3 +9,6 @@ npm-debug.log
 
 # vim temp files
 *swp
+
+# nyc
+.nyc_output
