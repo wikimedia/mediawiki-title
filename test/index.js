@@ -22,7 +22,7 @@ const doTest = (formatversion) => {
                 formatversion
             }
         })
-        .then(res => res.body.query);
+        .then((res) => res.body.query);
         return siteInfoCache[domain];
     };
 
@@ -69,6 +69,7 @@ const doTest = (formatversion) => {
             // Length
             [new Array(258).join('x'), 'title-invalid-too-long'],
             [`Special:${new Array(514).join('x')}`, 'title-invalid-too-long'],
+            [new Array(65).join('\ud83c\udf40'), 'title-invalid-too-long'],
             // Namespace prefix without actual title
             ['Talk:', 'title-invalid-empty'],
             ['Talk:#', 'title-invalid-empty'],
@@ -83,10 +84,10 @@ const doTest = (formatversion) => {
 
             it(`should throw ${testCase[1]} error for ${name}`, () => {
                 return getSiteInfo('en.wikipedia.org')
-                .then(siteInfo => Title.newFromText(testCase[0], siteInfo))
+                .then((siteInfo) => Title.newFromText(testCase[0], siteInfo))
                 .then(() => {
                     throw new Error('Error should be thrown');
-                }, e => assert.deepEqual(e.message, testCase[1]));
+                }, (e) => assert.deepEqual(e.message, testCase[1]));
             });
         });
 
@@ -113,7 +114,8 @@ const doTest = (formatversion) => {
             // Special pages can have longer titles
             [`Special:${new Array(500).join('x')}`],
             [new Array(252).join('x')],
-            [new Array(257).join('x')],
+            [new Array(256).join('x')],
+            [new Array(64).join('\ud83c\udf40')],
             ['-'],
             ['aũ'],
             ['"Believing_Women"_in_Islam._Unreading_Patriarchal_Interpretations_of_the_Qur\\\'ān']
@@ -127,7 +129,7 @@ const doTest = (formatversion) => {
 
             it(`${name} should be valid`, () => {
                 return getSiteInfo('en.wikipedia.org')
-                .then(siteInfo => Title.newFromText(title[0], siteInfo));
+                .then((siteInfo) => Title.newFromText(title[0], siteInfo));
             });
         });
     });
@@ -248,27 +250,27 @@ const doTest = (formatversion) => {
             ['es.wikipedia.org', 'Especial:SpecialPages', 'Especial:PáginasEspeciales'],
             ['es.wikipedia.org', 'Especial:Expandir plantillas', 'Especial:Sustituir_plantillas'],
             // eslint-disable-next-line max-len
-            ['es.wikipedia.org', 'Especial:BookSources/9784041047910', 'Especial:FuentesDeLibros/9784041047910'],
+            ['es.wikipedia.org', 'Especial:BookSources/9784041047910', 'Especial:FuentesDeLibros/9784041047910']
         ];
 
         testCases.forEach((test) => {
             it(`For ${test[0]} should normalize ${test[1]} to ${test[2]}`, () => {
                 return getSiteInfo(test[0])
-                .then(siteInfo => Title.newFromText(test[1], siteInfo).getPrefixedDBKey())
-                .then(res => assert.deepEqual(res, test[2]));
+                .then((siteInfo) => Title.newFromText(test[1], siteInfo).getPrefixedDBKey())
+                .then((res) => assert.deepEqual(res, test[2]));
             });
         });
 
         it('Should normalize fragment', () => {
             return getSiteInfo('en.wikipedia.org')
-            .then(siteInfo => Title.newFromText('Test#some fragment', siteInfo))
-            .then(res => assert.deepEqual(res.getFragment(), 'some_fragment'));
+            .then((siteInfo) => Title.newFromText('Test#some fragment', siteInfo))
+            .then((res) => assert.deepEqual(res.getFragment(), 'some_fragment'));
         });
 
         it('Should normalize and give readable title', () => {
             return getSiteInfo('en.wikipedia.org')
-            .then(siteInfo => Title.newFromText('X-Men_(film_series)', siteInfo))
-            .then(res => assert.deepEqual(res.getPrefixedText(), 'X-Men (film series)'));
+            .then((siteInfo) => Title.newFromText('X-Men_(film_series)', siteInfo))
+            .then((res) => assert.deepEqual(res.getPrefixedText(), 'X-Men (film series)'));
         });
     });
 
@@ -282,7 +284,7 @@ const doTest = (formatversion) => {
             [2, 'File:Example.svg', 6, 'File:Example.svg'],
             [2, 'Test', 2, 'User:Test'],
             [2, ':Test', 0, 'Test'],
-            [0, ':User:Test', 2, 'User:Test'],
+            [0, ':User:Test', 2, 'User:Test']
         ];
         testCases.forEach((test) => {
             it(`For ns:${test[0]} should default ${test[1]} to ${test[2]}`, () => {
@@ -303,59 +305,59 @@ const doTest = (formatversion) => {
         const data = [
             [
                 ' %!"$&\'()*,\\-.\\/0-9:;=?@A-Z\\\\^_`a-z~\\x80-\\xFF+',
-                ' %!"$&\'()*,\\-./0-9:;=?@A-Z\\\\\\^_`a-z~+\\u0080-\\uFFFF',
+                ' %!"$&\'()*,\\-./0-9:;=?@A-Z\\\\\\^_`a-z~+\\u0080-\\uFFFF'
             ],
             [
                 'QWERTYf-\\xFF+',
-                'QWERTYf-\\x7F+\\u0080-\\uFFFF',
+                'QWERTYf-\\x7F+\\u0080-\\uFFFF'
             ],
             [
                 'QWERTY\\x66-\\xFD+',
-                'QWERTYf-\\x7F+\\u0080-\\uFFFF',
+                'QWERTYf-\\x7F+\\u0080-\\uFFFF'
             ],
             [
                 'QWERTYf-y+',
-                'QWERTYf-y+',
+                'QWERTYf-y+'
             ],
             [
                 'QWERTYf-\\x80+',
-                'QWERTYf-\\x7F+\\u0080-\\uFFFF',
+                'QWERTYf-\\x7F+\\u0080-\\uFFFF'
             ],
             [
                 'QWERTY\\x66-\\x80+\\x23',
-                'QWERTYf-\\x7F+#\\u0080-\\uFFFF',
+                'QWERTYf-\\x7F+#\\u0080-\\uFFFF'
             ],
             [
                 'QWERTY\\x66-\\x80+\\xD3',
-                'QWERTYf-\\x7F+\\u0080-\\uFFFF',
+                'QWERTYf-\\x7F+\\u0080-\\uFFFF'
             ],
             [
                 '\\\\\\x99',
-                '\\\\\\u0080-\\uFFFF',
+                '\\\\\\u0080-\\uFFFF'
             ],
             [
                 '-\\x99',
-                '\\-\\u0080-\\uFFFF',
+                '\\-\\u0080-\\uFFFF'
             ],
             [
                 'QWERTY\\-\\x99',
-                'QWERTY\\-\\u0080-\\uFFFF',
+                'QWERTY\\-\\u0080-\\uFFFF'
             ],
             [
                 '\\\\x99',
-                '\\\\x99',
+                '\\\\x99'
             ],
             [
                 'A-\\x9F',
-                'A-\\x7F\\u0080-\\uFFFF',
+                'A-\\x7F\\u0080-\\uFFFF'
             ],
             [
                 '\\x66-\\x77QWERTY\\x88-\\x91FXZ',
-                'f-wQWERTYFXZ\\u0080-\\uFFFF',
+                'f-wQWERTYFXZ\\u0080-\\uFFFF'
             ],
             [
                 '\\x66-\\x99QWERTY\\xAA-\\xEEFXZ',
-                'f-\\x7FQWERTYFXZ\\u0080-\\uFFFF',
+                'f-\\x7FQWERTYFXZ\\u0080-\\uFFFF'
             ]
         ];
 
@@ -374,19 +376,19 @@ const doTest = (formatversion) => {
             .then((res) => {
                 return Object.keys(res.body.sitematrix)
                 .filter((idx) => {
-                    return idx !== 'count'
-                        && idx !== 'specials'
-                        && res.body.sitematrix[idx].site.length;
+                    return idx !== 'count' &&
+                        idx !== 'specials' &&
+                        res.body.sitematrix[idx].site.length;
                 })
-                .map(idx => res.body.sitematrix[idx].site[0].url.replace(/^https?:\/\//, ''));
+                .map((idx) => res.body.sitematrix[idx].site[0].url.replace(/^https?:\/\//, ''));
             })
             .then((domains) => {
                 describe('Various domains', () => {
                     domains.forEach((domain) => {
                         it(`Should work for ${domain}`, () => {
                             return getSiteInfo(domain)
-                            .then(siteInfo => Title.newFromText('1', siteInfo))
-                            .then(res => assert.deepEqual(res.getPrefixedDBKey(), '1'));
+                            .then((siteInfo) => Title.newFromText('1', siteInfo))
+                            .then((res) => assert.deepEqual(res.getPrefixedDBKey(), '1'));
                         });
                     });
                 });
