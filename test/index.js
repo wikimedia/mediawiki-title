@@ -131,6 +131,25 @@ const doTest = (formatversion) => {
                 return getSiteInfo('en.wikipedia.org')
                 .then((siteInfo) => Title.newFromText(title[0], siteInfo));
             });
+
+            it(`${name} should be equal to itself`, () => {
+                return getSiteInfo('en.wikipedia.org')
+                    .then((siteInfo) => {
+                        const t1 = Title.newFromText(title[0], siteInfo);
+                        const t2 = Title.newFromText(` ${title[0]}_`, siteInfo);
+                        assert.deepEqual(t1.equals(t2), true);
+                        assert.deepEqual(t2.equals(t1), true);
+                    });
+            });
+            it(`${name} should not be equal to other titles`, () => {
+                return getSiteInfo('en.wikipedia.org')
+                    .then((siteInfo) => {
+                        const t1 = Title.newFromText(title[0], siteInfo);
+                        const t2 = Title.newFromText('NOT EQUAL TO ANYTHING', siteInfo);
+                        assert.deepEqual(t1.equals(t2), false);
+                        assert.deepEqual(t2.equals(t1), false);
+                    });
+            });
         });
     });
 
@@ -291,7 +310,7 @@ const doTest = (formatversion) => {
                 return getSiteInfo('en.wikipedia.org')
                 .then((siteInfo) => {
                     const t = Title.newFromText(test[1], siteInfo, test[0]);
-                    return [t.getNamespace()._id, t.getPrefixedDBKey()];
+                    return [t.getNamespace().getId(), t.getPrefixedDBKey()];
                 })
                 .then((res) => {
                     assert.deepEqual(res[0], test[2]);
