@@ -11,6 +11,8 @@ and applying wiki-specific capitalization rules. The namespace name is converted
 <dd></dd>
 <dt><a href="#Title">Title</a></dt>
 <dd></dd>
+<dt><a href="#TitleError">TitleError</a></dt>
+<dd></dd>
 </dl>
 
 ## Typedefs
@@ -171,6 +173,17 @@ Normalize a title according to the rules of <code>siteInfo</code>
 | --- | --- | --- |
 | title | <code>string</code> | The page title to normalize. |
 | siteInfo | <code>[SiteInfo](#SiteInfo)</code> | The site information. |
+
+<a name="TitleError"></a>
+
+## TitleError
+**Kind**: global exception class  
+
+* [TitleError](#TitleError)
+
+<code>TitleError</code> should be considered an opaque exception class,
+which is thrown by the various methods in this library.  It is exported
+so that it can be identified if caught by the caller.
 
 <a name="SiteInfo"></a>
 
