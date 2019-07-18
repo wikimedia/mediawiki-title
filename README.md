@@ -33,12 +33,14 @@ however not all of the fields are required for library operation.</p>
 * [Namespace](#Namespace)
     * [new Namespace(id, siteInfo)](#new_Namespace_new)
     * _instance_
+        * [.getId()](#Namespace++getId) ⇒ <code>number</code>
         * [.isMedia()](#Namespace++isMedia) ⇒ <code>boolean</code>
         * [.isSpecial()](#Namespace++isSpecial) ⇒ <code>boolean</code>
         * [.isMain()](#Namespace++isMain) ⇒ <code>boolean</code>
         * [.isTalk()](#Namespace++isTalk) ⇒ <code>boolean</code>
         * [.isUserTalk()](#Namespace++isUserTalk) ⇒ <code>boolean</code>
         * [.getNormalizedText()](#Namespace+getNormalizedText) ⇒ <code>string</code>
+        * [.equals(ns)](#Namespace+equals) ⇒ <code>boolean</code>
     * _static_
         * [.fromText(text, siteInfo)](#Namespace.fromText) ⇒ <code>[Namespace](#Namespace)</code> &#124; <code>undefined</code>
         * [.main(siteInfo)](#Namespace.main) ⇒ <code>[Namespace](#Namespace)</code>
@@ -54,6 +56,12 @@ Represents a wiki namespace
 | id | <code>number</code> | The namespace identifier |
 | siteInfo | <code>[SiteInfo](#SiteInfo)</code> | The site metadata information. |
 
+<a name="Namespace++getId"></a>
+
+### namespace.getId() ⇒ <code>number</code>
+Returns the numeric namespace identifier
+
+**Kind**: instance method of <code>[Namespace](#Namespace)</code>  
 <a name="Namespace++isMedia"></a>
 
 ### namespace.isMedia() ⇒ <code>boolean</code>
@@ -88,6 +96,13 @@ Checks whether namespace is `UserTalk`
 
 ### namespace.getNormalizedText() ⇒ <code>string</code>
 Get the canonical name string for this namespace.
+
+**Kind**: instance method of <code>[Namespace](#Namespace)</code>  
+<a name="Namespace+equals"></a>
+
+### namespace.equals(ns) ⇒ <code>boolean</code>
+Determines whether this namespace is equal to the given <code>ns</code>,
+based on the numeric namespace identifier.
 
 **Kind**: instance method of <code>[Namespace](#Namespace)</code>  
 <a name="Namespace.fromText"></a>
@@ -125,6 +140,7 @@ Creates a namespace object for a `Main` namespace.
         * [.getPrefixedDBKey()](#Title+getPrefixedDBKey) ⇒ <code>string</code>
         * [.getFragment()](#Title+getFragment) ⇒ <code>string</code> &#124; <code>undefined</code>
         * [.getNamespace()](#Title+getNamespace) ⇒ <code>[Namespace](#Namespace)</code>
+        * [.equals(title)](#Title+equals) ⇒ <code>boolean</code>
     * _static_
         * [.newFromText(title, siteInfo, defaultNs)](#Title.newFromText) ⇒ <code>[Title](#Title)</code>
 
@@ -157,6 +173,13 @@ Returns the normalized fragment part of the original title
 
 ### title.getNamespace() ⇒ <code>[Namespace](#Namespace)</code>
 Returns the namespace of an article.
+
+**Kind**: instance method of <code>[Title](#Title)</code>  
+<a name="Title+equals"></a>
+
+### title.equals(title2) ⇒ <code>boolean</code>
+Determines whether this title is equals to the given <code>title2</code>,
+based on comparing namespace and key.
 
 **Kind**: instance method of <code>[Title](#Title)</code>  
 <a name="Title.newFromText"></a>
