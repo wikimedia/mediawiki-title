@@ -172,6 +172,7 @@ const doTest = (formatversion) => {
             // eslint-disable-next-line max-len
             ['en.wikipedia.org', 'Foo \u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000 bar', 'Foo_bar'],
             ['en.wikipedia.org', 'Foo\u200E\u200F\u202A\u202B\u202C\u202D\u202Ebar', 'Foobar'],
+            ['en.wikipedia.org', 'Foo\u00AD\u061C\u2066\u2067\u2068\u2069bar', 'Foobar'],
             // Special handling for `i` first character
             ['tr.wikipedia.org', 'iTestTest', 'İTestTest'],
             ['az.wikipedia.org', 'iTestTest', 'İTestTest'],
