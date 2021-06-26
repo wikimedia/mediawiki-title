@@ -261,4 +261,4 @@ console.log(result.getPrefixedDBKey());
 ## Bug reporting
 
 For bug reporting please use [Phabricator](https://phabricator.wikimedia.org/tag/services/)
-and mark the bugs with `Services` label or contact directly in IRC in the [#wikimedia-services](http://webchat.freenode.net/?channels=wikimedia-services) channel.
+and mark the bugs with `Services` label or contact directly in IRC in the [#wikimedia-services](https://web.libera.chat/?channel=#wikimedia-services) channel.
