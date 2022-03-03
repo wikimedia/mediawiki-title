@@ -259,6 +259,7 @@ const doTest = (formatversion) => {
             ['en.wikipedia.org', 'ﬖ', 'ﬖ'],
             ['en.wikipedia.org', 'ﬗ', 'ﬗ'],
             ['en.wikipedia.org', 'ⓝ', 'ⓝ'],
+            ['ka.wikipedia.org', 'ო', 'ო'],
             // Special page aliases
             ['en.wikipedia.org', 'Special:NotSpecial', 'Special:NotSpecial'],
             ['en.wikipedia.org', 'Special:Lonelypages', 'Special:LonelyPages'],
